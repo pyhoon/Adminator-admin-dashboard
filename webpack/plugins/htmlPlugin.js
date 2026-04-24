@@ -5,6 +5,7 @@ const
 
 const titles = {
   'index': 'Dashboard',
+  'dashboard-2026': 'Dashboard · 2026 Preview',
   'blank': 'Blank',
   'buttons': 'Buttons',
   'calendar': 'Calendar',
@@ -48,7 +49,7 @@ module.exports = Object.keys(titles).map(title => {
     template: path.join(manifest.paths.src, `${title}.html`),
     path: manifest.paths.build,
     filename: `${title}.html`,
-    inject: true,
+    inject: title === 'dashboard-2026' ? false : true,
     minify,
   });
 });
