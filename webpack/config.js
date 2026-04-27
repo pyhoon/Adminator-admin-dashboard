@@ -29,9 +29,9 @@ const TerserPlugin = require("terser-webpack-plugin");
 // ------------------
 
 const
-  entry = [
-    path.join(manifest.paths.src, 'assets', 'scripts', manifest.entries.js),
-  ];
+  entry = {
+    '2026': path.join(manifest.paths.src, 'assets', 'scripts', '2026', 'index.js'),
+  };
 
 
 // ---------------
@@ -70,11 +70,6 @@ const optimization = {
         test: /[\\/]node_modules[\\/]@fullcalendar[\\/]/,
         name: 'vendor-fullcalendar',
         priority: 30,
-      },
-      bootstrap: {
-        test: /[\\/]node_modules[\\/]bootstrap[\\/]/,
-        name: 'vendor-bootstrap',
-        priority: 20,
       },
       // Other node_modules
       vendors: {
@@ -119,30 +114,12 @@ if (manifest.MINIFY) {
 // -----------------
 module.exports = {
   devtool: manifest.IS_PRODUCTION ? false : 'source-map',
-  context: path.join(manifest.paths.src, manifest.entries.js),
-  // watch: !manifest.IS_PRODUCTION,
+  context: manifest.paths.src,
   entry,
   mode: manifest.NODE_ENV,
-  // output: {
-  //   path: manifest.paths.build,
-  //   publicPath: '',
-  //   filename: manifest.outputFiles.bundle,
-  // },
-  module: {
-    rules,
-  },
+  module: { rules },
   optimization,
   resolve,
   plugins,
   devServer,
-  // Suppress Bootstrap SASS deprecation warnings (modern syntax)
-  ignoreWarnings: [
-    /Deprecation Warning/,
-    /node_modules\/bootstrap/,
-    /repetitive deprecation warnings omitted/,
-    /red\(\) is deprecated/,
-    /green\(\) is deprecated/,
-    /blue\(\) is deprecated/,
-    /Global built-in functions are deprecated/,
-  ],
 };

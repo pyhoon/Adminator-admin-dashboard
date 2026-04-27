@@ -1,18 +1,17 @@
 {
   "name": "adminator-admin-dashboard",
-  "version": "3.0.0",
+  "version": "4.0.0",
   "private": false,
-  "description": "Modern jQuery-free Bootstrap 5 Admin Dashboard Template with Dark Mode",
+  "description": "Adminator 2026 — vanilla-JS admin dashboard with a token-driven design system, dark mode, Chart.js, FullCalendar, and jsvectormap. No jQuery, no Bootstrap.",
   "main": "dist/index.html",
   "keywords": [
     "admin",
     "dashboard",
     "template",
-    "bootstrap",
-    "bootstrap5",
-    "jquery-free",
     "vanilla-js",
     "dark-mode",
+    "design-system",
+    "css-variables",
     "responsive",
     "mobile-first",
     "scss",
@@ -21,7 +20,8 @@
     "ui-kit",
     "admin-panel",
     "charts",
-    "datatable"
+    "fullcalendar",
+    "chartjs"
   ],
   "author": "Aigars Silkalns <hello@colorlib.com> (https://colorlib.com)",
   "license": "MIT",
@@ -59,6 +59,7 @@
     "test": "vitest",
     "test:run": "vitest run",
     "test:coverage": "vitest run --coverage",
+    "screenshots": "node scripts/screenshots.mjs",
     "prepublishOnly": "npm run lint && npm run build",
     "postpublish": "echo 'Package published successfully! View at: https://www.npmjs.com/package/adminator-admin-dashboard'"
   },
@@ -81,6 +82,7 @@
     "html-webpack-plugin": "^5.6.7",
     "jsdom": "^29.0.2",
     "mini-css-extract-plugin": "^2.10.2",
+    "playwright": "^1.59.1",
     "postcss": "^8.5.10",
     "postcss-loader": "^8.2.1",
     "postcss-preset-env": "^11.2.1",
@@ -105,15 +107,7 @@
     "@fullcalendar/interaction": "^6.1.20",
     "@fullcalendar/list": "^6.1.20",
     "@fullcalendar/timegrid": "^6.1.20",
-    "@popperjs/core": "^2.11.8",
-    "bootstrap": "^5.3.8",
-    "brand-colors": "^2.1.1",
     "chart.js": "^4.5.1",
-    "dayjs": "^1.11.20",
-    "jsvectormap": "^1.7.0",
-    "load-google-maps-api": "^2.0.2",
-    "masonry-layout": "^4.2.2",
-    "perfect-scrollbar": "^1.5.6",
-    "skycons": "^1.0.0"
+    "jsvectormap": "^1.7.0"
   }
 }
