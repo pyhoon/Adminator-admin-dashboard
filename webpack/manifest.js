@@ -55,19 +55,7 @@ const
 
 const
   outputFiles = {
-    bundle : 'bundle.js',
-    vendor : 'vendor.js',
-    css    : 'style.css',
-  };
-
-
-// --------------------
-// @Entries Files Names
-// --------------------
-
-const
-  entries = {
-    js   : 'index.js',
+    css : 'style.css',
   };
 
 
@@ -78,7 +66,6 @@ const
 module.exports = {
   paths,
   outputFiles,
-  entries,
   NODE_ENV,
   IS_DEVELOPMENT,
   IS_PRODUCTION,

@@ -1,28 +1,35 @@
-# Adminator Bootstrap 5 Admin Template v3.0.0
+# Adminator — 2026 Admin Dashboard Template (v4.0.0)
 
-**Adminator** is a responsive Bootstrap 5 Admin Template built with modern development tools. It provides you with a collection of ready to use code snippets and utilities, custom pages, a collection of applications and some useful widgets.
+**Adminator 4.0** is a vanilla-JS admin dashboard template with a token-driven CSS-variable design system, dark mode, and zero framework dependencies. **No jQuery. No Bootstrap.** Just clean HTML, modern CSS, and ~700 KB of production JS for the entire 18-page template.
 
-**Latest Update (v3.0.0)**: Major architecture release with new utility modules (Events, Performance, Storage, Sanitize, Logger), testing infrastructure (Vitest), code splitting, bundle analyzer, and comprehensive documentation. Zero jQuery, zero lodash - pure vanilla JavaScript.
+> **Heads up — v4.0.0 is a ground-up rewrite.** New design system, new shell architecture, Bootstrap removed. If you prefer the previous design, the v3 codebase lives on the [`legacy-v3`](https://github.com/puikinsh/Adminator-admin-dashboard/tree/legacy-v3) branch and will continue to receive security updates.
 
-**Looking for more premium admin templates?** Visit **[DashboardPack.com](https://dashboardpack.com/)** for a curated collection of high-quality admin dashboard templates for various frameworks and technologies.
+**[Live Demo →](https://colorlib.com/polygon/adminator/index.html)** · **[Looking for premium templates? Visit DashboardPack →](https://dashboardpack.com/)**
 
-**Performance Benefits**: Faster load times, optimized code splitting, modern ES6+ utilities, and zero external library overhead.
+## Preview
 
-**[Complete Documentation](https://puikinsh.github.io/Adminator-admin-dashboard/)** - Detailed setup guides, API reference, and examples
+### Light mode
 
-Preview of this awesome admin template available here: https://colorlib.com/polygon/adminator/index.html
+![Adminator 2026 — Light Mode](screenshots/adminator-2026-dashboard-light.png)
 
-# Preview
+### Dark mode
 
-### Screenshots
+![Adminator 2026 — Dark Mode](screenshots/adminator-2026-dashboard-dark.png)
 
-**Light Mode:**
-![Adminator Bootstrap 5 Light Mode](https://colorlib.com/wp/wp-content/uploads/sites/2/adminator-bootstrap-5-light.png.avif)
+### A few of the 18 pages
 
-**Dark Mode:**
-![Adminator Bootstrap 5 Dark Mode](https://colorlib.com/wp/wp-content/uploads/sites/2/adminator-bootstrap-5-dark.png.avif)
-
-### Demo Site: [Here](https://colorlib.com/polygon/adminator/index.html)
+<table>
+  <tr>
+    <td align="center" width="33%"><img src="screenshots/adminator-2026-email.png" alt="Email"><br><strong>Email</strong> — 3-pane inbox</td>
+    <td align="center" width="33%"><img src="screenshots/adminator-2026-calendar.png" alt="Calendar"><br><strong>Calendar</strong> — full FullCalendar</td>
+    <td align="center" width="33%"><img src="screenshots/adminator-2026-charts.png" alt="Charts"><br><strong>Charts</strong> — themed Chart.js</td>
+  </tr>
+  <tr>
+    <td align="center"><img src="screenshots/adminator-2026-forms.png" alt="Forms"><br><strong>Forms</strong> — inputs, switches</td>
+    <td align="center"><img src="screenshots/adminator-2026-datatable.png" alt="Data Table"><br><strong>Data Table</strong> — sort, filter, paginate</td>
+    <td align="center"><img src="screenshots/adminator-2026-signin.png" alt="Sign In"><br><strong>Sign In</strong> — split-screen auth</td>
+  </tr>
+</table>
 
 ## Upgrade to a Premium Dashboard
 
@@ -95,445 +102,290 @@ Need advanced features, dedicated support, and production-ready code? Explore ou
   <a href="https://dashboardpack.com/?utm_source=github&utm_medium=readme&utm_campaign=adminator"><strong>View All Premium Templates</strong></a>
 </p>
 
-## TOC
-- [What's New in v3.0.0](#whats-new-in-v300)
-- [Getting Started](#getting-started)
-  - [Prerequisites](#prerequisites)
-  - [Installing & Local Development](#installing--local-development)
-- [Adminator for other platforms and frameworks](#adminator-for-other-platforms-and-frameworks)
-- [Files/Folder Structure](#filesfolders-structure)
-- [Deployment](#deployment)
-- [Built With](#built-with)
+## Table of Contents
+
+- [What's New in v4.0.0](#whats-new-in-v400)
+- [Quick Start](#quick-start)
+- [Pages Included](#pages-included)
+- [Architecture](#architecture)
+- [Theming](#theming)
+- [Tech Stack](#tech-stack)
+- [Migrating from v3](#migrating-from-v3)
+- [Staying on v3](#staying-on-v3)
+- [Browser Support](#browser-support)
 - [Changelog](#changelog)
 - [Authors](#authors)
 - [License](#license)
 
-## What's New in v3.0.0
+## What's New in v4.0.0
 
-### Major Architecture & Developer Experience Release
+A ground-up redesign and rewrite. The whole template is built around a single CSS-variable token system, with a JS shell that renders the sidebar, topbar, and footer once for all 18 pages. **Bootstrap is gone.** Production JS dropped from ~4.5 MB to ~700 KB — an **85% reduction**.
 
-This release represents a comprehensive overhaul adding professional-grade utilities, testing, security, and optimized builds.
+### Highlights
 
-### New Utility Modules
-- **Events** - Event delegation, debounce, throttle (replaces lodash)
-- **Performance** - ResizeObserver, IntersectionObserver, lazy loading utilities
-- **Storage** - Safe localStorage wrapper with in-memory fallback
-- **Sanitize** - HTML/input sanitization for XSS prevention
-- **Logger** - Development-only logging utility
+- **Token-driven design system.** All colors, typography, spacing, and shadows live in `_tokens.scss` as CSS variables with light + dark variants. Edit one variable, every component updates.
+- **Real dark mode.** A single `data-theme` attribute on `<html>` swaps the entire UI — including Chart.js, FullCalendar, and jsvectormap, which all re-render via a `MutationObserver` to read the new token values.
+- **Zero framework CSS.** No Bootstrap. No utility-class soup. Every UI primitive (buttons, dropdowns, alerts, badges, modals, tabs, accordions, switches, progress bars) is custom-built and theme-aware.
+- **Single JS shell.** Sidebar/topbar/footer render from a single `NAV` manifest in `Shell.js`. Pages declare `<body data-active="..." data-crumbs="...">` and three placeholders. Add a nav item by editing one array.
+- **Real, themed library integrations.** Chart.js (6 chart types), FullCalendar (all four views, 24 seed events), jsvectormap (world map with 10 markers). All read CSS variables and re-render on theme toggle.
+- **All 18 pages redesigned**: Dashboard, Email, Calendar, Chat, Compose, Charts, Forms, UI Elements, Buttons, Basic Table, Data Table, Google Maps, Vector Maps, Blank, Sign In, Sign Up, 404, 500.
 
-### Testing Infrastructure
-- **Vitest** - Modern, fast testing framework
-- **Coverage Reports** - V8-based code coverage via `npm run test:coverage`
-- **Test Suites** - Initial tests for theme, DOM, and logger utilities
+### Bundle size
 
-### Build & Bundle Optimization
-- **Code Splitting** - Separate chunks for Chart.js (529KB), FullCalendar (654KB), Bootstrap
-- **Bundle Analyzer** - New `npm run build:analyze` for visual inspection
-- **Console Removal** - TerserPlugin drops console/debugger in production
-- **Lodash Removed** - Custom Events utility saves ~70KB
+| Metric                     | v3.0.0           | v4.0.0           | Δ        |
+| -------------------------- | ---------------- | ---------------- | -------- |
+| Production JS (total)      | ~4.5 MB          | ~700 KB          | **−85%** |
+| Production CSS             | ~280 KB          | 90 KB            | **−68%** |
+| Top-level npm dependencies | 16               | 8                | **−50%** |
 
-### Documentation & DX
-- **API Reference** - Complete docs in `docs/API.md`
-- **Component Guide** - Development patterns in `docs/COMPONENT_GUIDE.md`
-- **TypeScript Declarations** - IDE support via `types/adminator.d.ts`
-- **VSCode Settings** - Project-specific editor configuration
+See [CHANGELOG.md](CHANGELOG.md#400---2026-04-27) for the full release notes, including the migration guide.
 
-### Code Quality
-- **Dead Code Removed** - Cleaned up unused files
-- **HTML Accessibility** - Added `lang="en"` to all 18 HTML pages
-- **Zero Vulnerabilities** - Full security audit passed
+## Quick Start
 
-### Previous Updates (v2.9.x)
-- Comprehensive dependency updates to latest versions
-- Enhanced SCSS linting with stylelint-config-standard-scss
-- Security vulnerability fixes (node-forge, js-yaml)
+### Prerequisites
 
-## What's New in v2.7.1
+- **Node.js** 18.12 or higher
+- **npm** 9 or higher (ships with Node.js)
 
-**jQuery-Free Release** - Complete removal of jQuery dependency with modern vanilla JavaScript:
-
-### Major Performance Improvements
-- **~600KB Bundle Reduction**: Eliminated jQuery and all jQuery-dependent plugins
-- **Faster Load Times**: Native DOM manipulation for optimal performance
-- **Smaller Bundle Size**: Significantly reduced JavaScript payload
-- **Modern ES6+ Code**: Class-based architecture with modern JavaScript features
-
-### jQuery Replacements (Zero Breaking Changes)
-- **Chart.js**: Replaced jQuery Sparkline with Chart.js mini charts
-- **HTML5 Date Pickers**: Enhanced native date inputs with Day.js support
-- **Vanilla DataTables**: Custom table component with sorting and pagination
-- **SVG Pie Charts**: Pure JavaScript circular progress indicators
-- **Vector Maps**: JavaScript-based world map with markers and interactions
-- **Vanilla Popovers**: Lightweight alternatives to Bootstrap JS components
-
-### Technical Achievements
-- **100% Vanilla JavaScript**: No jQuery dependency anywhere in the codebase
-- **Component Architecture**: Modern class-based components (Sidebar, Charts, etc.)
-- **Enhanced DOM Utilities**: jQuery-like functionality using native JavaScript
-- **Mobile Optimized**: Touch-friendly interactions and responsive behavior
-- **Theme Integration**: All new components fully support dark/light mode switching
-
-### Previous Updates (v2.6.0 - Dark Mode System)
-
-### Dark Mode Features
-- **Smart Theme Toggle**: Bootstrap-based switch with sun/moon icons and intuitive labels
-- **OS Preference Detection**: Automatically detects and applies your preferred color scheme  
-- **Persistent Storage**: Remembers your theme choice across browser sessions
-- **Instant Switching**: Real-time theme updates without page reload
-- **Component Integration**: All charts, calendars, maps, and UI elements are theme-aware
-
-### Technical Implementation
-- **CSS Variables Architecture**: Comprehensive color system with semantic naming
-- **Chart.js Integration**: Dynamic color schemes for all chart types
-- **FullCalendar Support**: Dark-mode aware calendar with proper contrast
-- **Vector Maps**: Custom color palettes for both light and dark themes
-- **Component Compatibility**: Theme support across all interactive elements
-
-### Previous Updates (v2.5.0)
-- **Latest Dependencies**: All 22+ dependencies updated to latest versions  
-- **Modern Build Tools**: webpack 5.99.9, webpack-dev-server 5.2.2
-- **ESLint 9.x**: Migrated to modern flat config format
-- **Enhanced CSS**: Latest Sass (1.89.2), PostCSS (8.5.6), Bootstrap (5.3.7)
-- **Updated Components**: Chart.js 4.5.0, FullCalendar 6.1.17
-- **Zero Vulnerabilities**: Complete security audit with all packages secure
-
-## Getting Started
-
-You can use **Adminator** in several ways:
-
-### NPM Package Installation (Recommended)
-
-Install the complete template as an npm package:
+### Install and run
 
 ```bash
-# Install via npm
-npm install adminator-admin-dashboard
-
-# Or install via yarn
-yarn add adminator-admin-dashboard
-```
-
-**Package Information:**
-- **Package Name**: `adminator-admin-dashboard`
-- **Version**: 3.0.0 (Architecture release)
-- **Size**: 5.7 MB (includes source + built assets)
-- **Registry**: https://www.npmjs.com/package/adminator-admin-dashboard
-
-**Usage after npm install:**
-```bash
-# Navigate to the package directory
-cd node_modules/adminator-admin-dashboard
-
-# Install development dependencies (if you want to customize)
-npm install
-
-# Start development server
-npm start
-```
-
-**What's included in the npm package:**
-- Complete source code (`src/` directory)
-- Pre-built production assets (`dist/` directory)
-- All dependencies and development tools
-- Documentation (CLAUDE.md, CHANGELOG.md)
-- Ready-to-use HTML templates
-
-### Local Development Setup
-
-For development and customization, clone the repository:
-
-#### Prerequisites
-  - **Node.js 18.12.0 or higher** (tested with Node.js 23.11.0)
-  - **npm** (included with Node.js) or **Yarn**
-  - **Git**
-
-#### Installing & Local Development
-
-```bash
-# Clone the repository
+# Clone the repo
 git clone https://github.com/puikinsh/Adminator-admin-dashboard.git adminator
-
-# Navigate to the project directory
 cd adminator
 
 # Install dependencies
 npm install
 
-# Start development server (available at http://localhost:4000)
+# Start the dev server (http://localhost:4000)
 npm start
-
-# Alternative: Start with webpack dashboard
-npm run dev
 ```
 
-### Quick Start Options
-
-1. **Fastest**: Use prebuilt static assets from [releases](https://github.com/puikinsh/Adminator-admin-dashboard/releases)
-2. **Recommended**: Install via npm package for easy updates
-3. **Development**: Clone repository for full customization
-
-#### Development Commands
+### Build commands
 
 ```bash
-# Development server with hot reload
+# Development server with HMR
 npm start
 
-# Development server with dashboard
-npm run dev
-
-# Build for production (optimized)
-npm run build
-
-# Build for production (unminified)
-npm run release:unminified
-
-# Build for production (minified)
+# Production build (extracted CSS, minified)
 npm run release:minified
 
-# Preview production build
-npm run preview
+# Default build (extracted CSS, unminified — useful for debugging)
+npm run build
 
-# Lint JavaScript files
-npm run lint:js
-
-# Lint SCSS files
-npm run lint:scss
-
-# Run all linters
+# Lint everything (JS + SCSS) — must be 0/0 to ship
 npm run lint
 
-# Run tests
-npm run test
-
-# Run tests with coverage
-npm run test:coverage
-
-# Analyze bundle size
+# Bundle size analyzer
 npm run build:analyze
+
+# Wipe dist/
+npm run clean
 ```
 
-## Dark Mode Usage
+### Install via npm
 
-Adminator now includes a comprehensive dark mode system that works out of the box:
-
-### Automatic Setup
-- Dark mode is automatically initialized on page load
-- Detects your OS preference (light/dark) on first visit
-- Remembers your choice across browser sessions
-
-### Theme Toggle
-- Look for the **Light/Dark** toggle switch in the header navigation
-- Click to instantly switch between light and dark themes
-- Visual feedback with sun and moon icons
-
-### For Developers
-
-**[Complete Theme API Documentation →](https://puikinsh.github.io/Adminator-admin-dashboard/api/theme-api)**
-
-**Using the Theme API:**
-```javascript
-// Get current theme
-const currentTheme = Theme.current(); // 'light' or 'dark'
-
-// Switch themes programmatically
-Theme.toggle();
-
-// Set specific theme
-Theme.apply('dark');
-
-// Listen for theme changes
-window.addEventListener('adminator:themeChanged', (event) => {
-  console.log('Theme changed to:', event.detail.theme);
-});
+```bash
+npm install adminator-admin-dashboard
 ```
 
-**CSS Variables for Custom Styling:**
-```css
-.my-component {
-  background: var(--c-bkg-card);
-  color: var(--c-text-base);
-  border: 1px solid var(--c-border);
+The package ships both `src/` and a pre-built `dist/`.
+
+## Pages Included
+
+All 18 pages share the same shell (sidebar + topbar + footer) and theme system. Standalone pages (auth, errors) skip the shell.
+
+| Page              | Description                                                          |
+| ----------------- | -------------------------------------------------------------------- |
+| Dashboard         | KPIs, real Chart.js monthly chart, regional stats, todo, weather     |
+| Email             | 3-pane inbox with folders, message list, reader pane, attachments    |
+| Calendar          | Real FullCalendar (Day/Week/Month/Agenda) with seed events           |
+| Chat              | 2-pane conversation list + thread with typing indicator              |
+| Compose           | Rich-text email composer with attachments and scheduling             |
+| Charts            | 6 themed Chart.js examples (line, bar, doughnut, radar, area, stack) |
+| Forms             | Inputs, selects, switches, checkboxes, validation states             |
+| UI Elements       | Alerts, badges, progress, spinners, tabs, accordion, modal, tooltips |
+| Buttons           | Solid/soft/outline/ghost variants, sizes, icons, button groups       |
+| Basic Table       | Striped table with status tags and trend indicators                  |
+| Data Table        | Sortable + paginated table with filters, search, row selection       |
+| Google Maps       | Embedded Google Map with offices table                               |
+| Vector Maps       | Real jsvectormap with city markers and continent KPIs                |
+| Blank             | Starter page with hero + empty card                                  |
+| Sign In / Sign Up | Split-screen auth with social buttons                                |
+| 404 / 500         | Themed error pages with gradient codes                               |
+
+## Architecture
+
+The full architecture is documented in [CLAUDE.md](CLAUDE.md). The short version:
+
+```text
+src/
+├── *.html                       # 18 pages, ~500 lines each
+└── assets/
+    ├── scripts/2026/            # The only JS — 6 modules
+    │   ├── index.js             # entry: imports SCSS, mounts shell, runs init
+    │   ├── Shell.js             # NAV manifest + sidebar/topbar/footer renderers
+    │   ├── init.js              # theme toggle, dropdowns, accordions, tabs, etc.
+    │   ├── charts.js            # Chart.js seeds, theme-aware
+    │   ├── calendar.js          # FullCalendar, theme-aware
+    │   └── maps.js              # jsvectormap, theme-aware
+    └── styles/2026/             # The only SCSS — 18 partials
+        ├── index.scss           # entry, @use's everything below
+        ├── _tokens.scss         # CSS variables (light + dark)
+        ├── _shell.scss          # sidebar, topbar, footer chrome
+        ├── _components.scss     # buttons, cards, hero, table, tag
+        ├── _ui.scss             # alerts, badges, progress, tabs, modal
+        ├── _forms.scss          # inputs, select, switch, check, radio
+        ├── _auth.scss / _error.scss / _chat.scss / _data.scss / _charts.scss
+        ├── _dashboard.scss / _email.scss / _calendar.scss
+        ├── _fullcalendar.scss   # FullCalendar token overrides
+        └── _responsive.scss     # all media queries in one place
+```
+
+Every shell page follows the same anatomy:
+
+```html
+<body data-active="dashboard" data-crumbs="Workspace | Dashboard">
+  <div class="shell">
+    <div data-shell-sidebar></div>      <!-- rendered by Shell.js -->
+    <div class="main">
+      <div data-shell-topbar></div>     <!-- rendered by Shell.js -->
+      <main class="content">
+        <!-- page-specific content -->
+      </main>
+      <div data-shell-footer></div>     <!-- rendered by Shell.js -->
+    </div>
+  </div>
+</body>
+```
+
+`data-active` matches a `key` in `Shell.js`'s `NAV` manifest. `data-crumbs` is a `|`-separated breadcrumb (last segment is highlighted as the current page).
+
+### Adding a new page
+
+1. Create `src/foo.html` with the body anatomy above.
+2. Add `'foo': 'Adminator · Foo'` to the `titles` map in `webpack/plugins/htmlPlugin.js`.
+3. Add a sidebar entry to `NAV` in `src/assets/scripts/2026/Shell.js`.
+4. Restart the dev server.
+
+## Theming
+
+Every visual decision is a CSS variable in `src/assets/styles/2026/_tokens.scss`. Change one, the whole template updates.
+
+```scss
+:root[data-theme="light"] {
+  --primary:       #2563EB;
+  --primary-light: #3B82F6;
+  --primary-dark:  #1D4ED8;
+  --primary-soft:  #EFF6FF;
+
+  --bg-body:    #F0F4F8;
+  --bg-card:    #FFFFFF;
+  --bg-hover:   #F8FAFC;
+
+  --t-base:     #1E293B;   /* primary text */
+  --t-muted:    #64748B;
+  --t-light:    #94A3B8;
+
+  /* ... plus success / warning / danger / info / purple / pink / teal / orange */
+}
+
+:root[data-theme="dark"] {
+  /* dark variants of the same tokens */
 }
 ```
 
-**Available CSS Variables:**
-- `--c-bkg-body` - Main background
-- `--c-bkg-card` - Card backgrounds  
-- `--c-text-base` - Primary text color
-- `--c-text-muted` - Secondary text color
-- `--c-border` - Border colors
-- `--c-primary` - Primary brand color
+Toggle theme programmatically:
 
-**[View Complete CSS Variables Reference →](https://puikinsh.github.io/Adminator-admin-dashboard/customization/theme-system)**
-
-## Documentation
-
-**[Complete Documentation Site](https://puikinsh.github.io/Adminator-admin-dashboard/)** - Comprehensive guides and API reference
-
-### Quick Links:
-- **[Installation Guide](https://puikinsh.github.io/Adminator-admin-dashboard/getting-started/installation)** - Complete setup instructions
-- **[Theme System](https://puikinsh.github.io/Adminator-admin-dashboard/customization/theme-system)** - Dark mode and theming
-- **[API Reference](https://puikinsh.github.io/Adminator-admin-dashboard/api/theme-api)** - JavaScript API documentation
-- **[Examples](https://puikinsh.github.io/Adminator-admin-dashboard/examples/theme-integration)** - Integration examples
-
-## Adminator for other platforms and frameworks
-* [Adminator right to left](https://github.com/mortezakarimi/Adminator-admin-dashboard-rtl) - Adminator modified to work with right to left languages like Persian and Arabic
-
-## Files/Folders Structure
-
-Here is a brief explanation of the template folder structure and some of its main files usage:
-
-```
-└── src                         # Contains all template source files.
-│   └── assets                  # Contains JS, CSS, images and icon fonts.
-│   │   └── scripts             # Contains all JavaScript files.
-│   │   │   └── charts          # Chart.js, Sparkline & Pie Chart plugins init.
-│   │   │   └── chat            # All chat app JS code.
-│   │   │   └── constants       # Template constant values like color values.
-│   │   │   └── datatable       # Date table plugin init.
-│   │   │   └── datepicker      # Bootstrap datepicker init.
-│   │   │   └── email           # All email app code.
-│   │   │   └── fullcalendar    # Fullcalendar plugin init.
-│   │   │   └── googleMaps      # Google maps API integration code.
-│   │   │   └── masonry         # Masonry layout code.
-│   │   │   └── popover         # Bootstrap popover plugin init.
-│   │   │   └── scrollbar       # Perfect scrollbar plugin init.
-│   │   │   └── search          # Topbar toggle search init.
-│   │   │   └── sidebar         # Sidebar JS code.
-│   │   │   └── skycons         # Animated icons plugin init.
-│   │   │   └── utils           # Basic utils used for proper rendering.
-│   │   │   └── vectorMaps      # Vector maps plugin init.
-│   │   │   └── app.js          # Main application entry point.
-│   │   │
-│   │   └── static              # Contains the non-code files.
-│   │   │   └── fonts           # Contains icon fonts.
-│   │   │   └── images          # Contains all template images/svg.
-│   │   │
-│   │   └── styles              # Contains all SCSS files.
-│   │       └── spec            # Contains custom SCSS files.
-│   │       │   └── components  # Contains all template components.
-│   │       │   └── generic     # Contains basic scaffolding styles.
-│   │       │   └── screens     # Contains views specific styles.
-│   │       │   └── settings    # Contains all template variables.
-│   │       │   └── tools       # Contains all mixins.
-│   │       │   └── utils       # Contains helper classes.
-│   │       │   └── index.scss  # Indicator file.
-│   │       │
-│   │       └── vendor          # Contains all plugin files & custom styles.
-│   │       └── index.scss      # Main style entry point.
-│   │
-│   └── *.html                  # All HTML template pages.
-└── webpack                     # Contains Webpack configuration.
-│   └── plugins                 # Contains all Webpack plugins config.
-│   └── rules                   # Contains Webpack loaders config.
-│   └── config.js               # Main Webpack configuration.
-│   └── devServer.js            # Development server configuration.
-│   └── manifest.js             # Build system constants.
-│
-└── .babelrc                    # Babel ES6 transpiler configuration.
-└── .editorconfig               # Code editor consistency settings.
-└── eslint.config.mjs           # ESLint 9.x flat configuration.
-└── .gitattributes              # Git attributes configuration.
-└── .gitignore                  # Git ignore patterns.
-└── .stylelintrc.json           # SCSS/CSS linting configuration.
-└── browserslist                # Supported browsers configuration.
-└── CHANGELOG.md                # Version history and updates.
-└── package.json                # Node.js package configuration.
-└── README.md                   # This documentation file.
-└── webpack.config.js           # Webpack entry configuration.
+```js
+// Set
+document.documentElement.setAttribute('data-theme', 'dark');
+localStorage.setItem('dash26-theme', 'dark');
 ```
 
-## Deployment
+Charts/maps re-render automatically — they observe the `data-theme` attribute.
 
-In deployment process, you have several commands:
+## Tech Stack
 
-1. **Production Build** - Generate optimized assets for production:
+### Build & tooling
+
+- [**Webpack 5**](https://webpack.js.org/) — bundler (Vite migration planned for v4.1)
+- [**Sass**](https://sass-lang.com/) (modern `@use` syntax) — preprocessor
+- [**PostCSS**](https://postcss.org/) — autoprefix + future-CSS
+- [**ESLint 9**](https://eslint.org/) (flat config) + [**Stylelint 17**](https://stylelint.io/) — linting
+- [**Babel**](https://babeljs.io/) — ES2020+ transpilation
+
+### Runtime libraries
+
+- [**Chart.js 4.5**](https://www.chartjs.org/) — line/bar/doughnut/radar/area/stacked charts
+- [**FullCalendar 6.1**](https://fullcalendar.io/) — Day/Week/Month/Agenda calendar views
+- [**jsvectormap 1.7**](https://github.com/themustafaomar/jsvectormap) — interactive world map
+
+### Fonts
+
+- [**Inter**](https://rsms.me/inter/) — body text
+- [**Inter Tight**](https://rsms.me/inter/) — display headings
+- [**JetBrains Mono**](https://www.jetbrains.com/lp/mono/) — numerics, code, eyebrows
+
+All fonts loaded from Google Fonts via a single `@import` at the top of `_base.scss`.
+
+### Removed in v4.0
+
+The following dependencies were dropped — none of them are used in the new design:
+
+- `bootstrap`, `@popperjs/core` — replaced with custom UI primitives
+- `dayjs` — replaced with native `Intl.DateTimeFormat`
+- `perfect-scrollbar` — native scrollbars styled via CSS
+- `masonry-layout`, `load-google-maps-api`, `skycons`, `brand-colors` — unused
+
+## Migrating from v3
+
+v4 is a rewrite, not an upgrade. The class names, file paths, and JS APIs all changed. If you have a v3 project with custom work:
+
+1. **Treat v4 as a fresh template.** Don't try to merge — copy your custom content into the new shell.
+2. **Move theme overrides** from Bootstrap variables to `_tokens.scss`.
+3. **Adopt the page anatomy** (`data-active`, `data-crumbs`, three placeholder divs).
+4. **Port custom JS** from `AdminatorApp` / `Sidebar` / `ChartComponent` classes to the data-attribute pattern in `init.js`.
+
+For a smoother path, **stay on v3** — see below.
+
+## Staying on v3
+
+If you've built on v3 and prefer the old design, the v3 codebase lives on the [`legacy-v3`](https://github.com/puikinsh/Adminator-admin-dashboard/tree/legacy-v3) branch and will continue to receive **security updates** for at least 12 months.
+
 ```bash
-npm run build
+# Clone v3 directly
+git clone -b legacy-v3 https://github.com/puikinsh/Adminator-admin-dashboard.git adminator-v3
+
+# Or pin v3 from npm
+npm install adminator-admin-dashboard@^3
 ```
 
-2. **Production Preview** - Preview the production build locally:
-```bash
-npm run preview
-```
+## Browser Support
 
-3. **Custom Builds**:
-```bash
-# Unminified production build (for debugging)
-npm run release:unminified
-
-# Minified production build (smallest size)
-npm run release:minified
-```
-
-The built files will be available in the `dist/` directory.
-
-## Built With
-
-### Core Framework & Build Tools
-- [Bootstrap 5.3.8](http://getbootstrap.com/) - Modern CSS framework
-- [Webpack 5.103.0](https://webpack.js.org/) - Module bundler and build tool
-- [Babel 7.28.x](https://babeljs.io/) - JavaScript transpiler
-- [Sass 1.94.2](http://sass-lang.com/) - CSS preprocessor
-- [PostCSS 8.5.6](http://postcss.org/) - CSS transformations
-- [ESLint 9.39.1](https://eslint.org/) - JavaScript linting (flat config)
-- [Stylelint 16.26.1](https://stylelint.io/) - CSS/SCSS linting
-
-### UI Components & Charts
-- [Chart.js 4.5.1](http://www.chartjs.org/) - Modern charting library
-- [FullCalendar 6.1.19](https://fullcalendar.io/) - Interactive calendar
-- [DataTables](https://datatables.net/) - Advanced table functionality
-- [Easy Pie Chart](http://rendro.github.io/easy-pie-chart/) - Animated pie charts
-- [Perfect Scrollbar 1.5.6](https://github.com/utatti/perfect-scrollbar) - Custom scrollbars
-
-### JavaScript Libraries
-- **[Chart.js 4.5.1](http://www.chartjs.org/)** - Modern charting library (replaces jQuery Sparkline)
-- **[jsvectormap 1.7.0](https://github.com/themustafaomar/jsvectormap)** - Interactive vector maps (replaces jVectorMap)
-- [Day.js 1.11.19](https://day.js.org/) - Modern 2KB date library (replaces Moment.js)
-- [Masonry 4.2.2](https://masonry.desandro.com/) - Grid layouts
-- **100% Vanilla JavaScript** - No jQuery or lodash dependencies
-
-### Icons & Fonts
-- [Font Awesome](http://fontawesome.io/) - Icon library
-- [Themify Icons](https://themify.me/themify-icons) - Additional icons
-- [Roboto Font](https://fonts.google.com/specimen/Roboto) - Google Fonts
-
-### Additional Plugins
-- **HTML5 Date Inputs** - Enhanced native date pickers (replaces Bootstrap Datepicker)
-- [Skycons](https://darkskyapp.github.io/skycons/) - Animated weather icons
-- [Load Google Maps API](https://github.com/yuanqing/load-google-maps-api) - Maps integration
+Modern evergreen browsers — Chrome, Firefox, Safari, Edge (last 2 versions). The template uses `color-mix()`, CSS custom properties, `aspect-ratio`, container queries are not yet used. IE11 is not supported.
 
 ## Changelog
 
-See [CHANGELOG.md](CHANGELOG.md) for detailed version history.
+See [CHANGELOG.md](CHANGELOG.md) for the full version history.
 
-📚 **[Online Documentation](https://puikinsh.github.io/Adminator-admin-dashboard/)** includes comprehensive guides for all features.
+### Latest releases
 
-#### Latest Release: V 3.0.0 (2026-01-13)
-- **New Utility Modules** - Events, Performance, Storage, Sanitize, Logger
-- **Testing Infrastructure** - Vitest with coverage reporting
-- **Code Splitting** - Separate chunks for Chart.js, FullCalendar, Bootstrap
-- **Bundle Analyzer** - Visual bundle inspection via `npm run build:analyze`
-- **Lodash Removed** - Custom Events utility replaces lodash (~70KB saved)
-- **Documentation** - API reference and component development guide
-- **TypeScript Declarations** - IDE support with type definitions
+- **v4.0.0** (2026-04-27) — The 2026 redesign. New design system, Bootstrap dropped, ~85% bundle reduction. [Details](CHANGELOG.md#400---2026-04-27).
+- **v3.0.0** (2026-01-13) — Architecture release. New utility modules, Vitest, code splitting, bundle analyzer.
+- **v2.7.1** — Fully jQuery-free.
+- **v2.6.0** — Dark mode system.
 
-#### Previous Releases
-- **V 2.9.0**: Comprehensive dependency updates, SCSS linting improvements
-- **V 2.8.1**: Bootstrap 5.3.8, security updates, and enhanced tooling
-- **V 2.8.0**: Webpack 5 asset modules and dependency modernization
-- **V 2.7.1**: 100% jQuery-Free with modern vanilla JavaScript
-- **V 2.6.0**: Complete Dark Mode System with theme switching
-- **V 2.5.0**: Updated all dependencies, ESLint 9.x, zero vulnerabilities
-- **V 2.1.0**: Upgraded all dependencies
-- **V 2.0.0**: Upgrade to Bootstrap 5
-- **V 1.1.0**: Upgrade to webpack 5
-- **V 1.0.0**: Initial Release
+## Adminator for Other Platforms
+
+- [Adminator RTL](https://github.com/mortezakarimi/Adminator-admin-dashboard-rtl) — right-to-left languages (Arabic, Hebrew, Persian)
 
 ## Authors
+
 [Colorlib](https://colorlib.com)
 
 ## More Resources from Colorlib
+
 - [Bootstrap Dashboards](https://colorlib.com/wp/free-bootstrap-admin-dashboard-templates/)
 - [Bootstrap Templates](https://colorlib.com/wp/free-bootstrap-templates/)
 - [HTML Templates](https://colorlib.com/wp/free-html-website-templates/)
@@ -544,4 +396,4 @@ See [CHANGELOG.md](CHANGELOG.md) for detailed version history.
 
 ## License
 
-Adminator is licensed under The MIT License (MIT). Which means that you can use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the final products. But you always need to state that Colorlib is the original author of this template.
+Adminator is licensed under [The MIT License](LICENSE). Use, copy, modify, merge, publish, distribute, sublicense, and sell copies — but always credit Colorlib as the original author.

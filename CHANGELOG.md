@@ -1,5 +1,69 @@
 # Changelog
 
+## [4.0.0] - 2026-04-27
+
+### The 2026 Redesign
+
+A ground-up rewrite of the design system. New visual language, new shell architecture, dramatically smaller bundle. Every page redesigned. **Bootstrap dropped.** The legacy v3 architecture is preserved on the [`legacy-v3`](https://github.com/puikinsh/Adminator-admin-dashboard/tree/legacy-v3) branch for anyone who prefers the old look.
+
+### Highlights
+
+- **New design system, single source of truth.** All visual decisions live in `_tokens.scss` — colors, typography, spacing, shadows, all as CSS variables with light/dark variants. Change one variable, every component updates.
+- **Token-driven dark mode.** No more dual stylesheets. Toggle `data-theme="dark"` on `<html>` and every component (including Chart.js, FullCalendar, jsvectormap) re-renders in the active theme.
+- **Bootstrap removed.** All UI primitives are custom — buttons, dropdowns, tabs, modals, alerts, badges, progress bars, accordions. None of them depend on Bootstrap CSS or JS. The bundle is ~85% smaller as a result.
+- **Single shell, rendered from a manifest.** `Shell.js` reads a `NAV` array and renders the sidebar, topbar, and footer for every page. Adding a nav item is one line; updating the workspace name updates 18 pages at once.
+- **All 18 pages redesigned**: Dashboard, Email, Calendar, Chat, Compose, Charts, Forms, UI Elements, Buttons, Basic Table, Data Table, Google Maps, Vector Maps, Blank, Sign In, Sign Up, 404, 500.
+
+### Bundle size
+
+| Metric                     | v3.0.0           | v4.0.0           | Δ        |
+| -------------------------- | ---------------- | ---------------- | -------- |
+| Production JS (total)      | ~4.5 MB          | ~700 KB          | **−85%** |
+| Production CSS             | ~280 KB          | 90 KB            | **−68%** |
+| Webpack entries            | 1 (legacy)       | 1 (clean)        | —        |
+| Webpack plugins/configs    | 7 files          | 7 files (cleaner)| —        |
+| Top-level npm dependencies | 16               | 8                | **−50%** |
+
+### Architecture changes
+
+- **One JS entry**: `src/assets/scripts/2026/index.js`. Imports the SCSS bundle, mounts the shell, runs init.
+- **One SCSS root**: `src/assets/styles/2026/index.scss`. 18 partials covering tokens, base, animations, shell, dropdowns, components, forms, UI, auth, error, chat, data, charts, dashboard, email, calendar, FullCalendar overrides, and responsive.
+- **Page anatomy**: every shell page declares `<body data-active="..." data-crumbs="...">` and three placeholder divs. The shell renders around them. See [CLAUDE.md](CLAUDE.md) for the full pattern.
+- **Real, themed library integrations**: Chart.js (6 chart types), FullCalendar (full month/week/day/agenda views with 24 seed events), jsvectormap (world map with markers). All read CSS variables and re-render on theme toggle via a `MutationObserver` on `data-theme`.
+
+### Removed
+
+- `bootstrap` (5.3.8) — not used anywhere in the new design
+- `@popperjs/core` (2.11.8) — only needed by Bootstrap
+- `dayjs` (1.11.20) — replaced by native `Intl.DateTimeFormat`
+- `perfect-scrollbar` (1.5.6) — native scrollbars styled via CSS
+- `masonry-layout` (4.2.2) — unused
+- `load-google-maps-api` (2.0.2) — replaced with iframe embed
+- `skycons` (1.0.0) — replaced with inline SVG weather icons
+- `brand-colors` (2.1.1) — replaced by token system
+- Legacy `src/assets/scripts/{app.js, components/, utils/, charts/, fullcalendar/, datatable/, ...}` — entire legacy JS tree
+- Legacy `src/assets/styles/{spec/, vendor/, utils/, index.scss}` — entire legacy SCSS tree
+- `tests/utils/` (3 test files) — they tested utils that no longer exist; new tests pending
+
+### Migration guide
+
+If you're upgrading an existing v3 project:
+
+1. **Treat this as a rewrite, not a patch.** Class names, file paths, and JS APIs all changed.
+2. **Custom theme work?** Move your color overrides from Bootstrap variables to `_tokens.scss`.
+3. **Custom pages?** Adopt the new page anatomy (`data-active`, `data-crumbs`, three placeholder divs).
+4. **Custom JS components?** The legacy `AdminatorApp` / `Sidebar` / `ChartComponent` classes are gone — port to the data-attribute driven pattern (see `init.js` for examples).
+5. **Want to stay on v3?** Use the [`legacy-v3`](https://github.com/puikinsh/Adminator-admin-dashboard/tree/legacy-v3) branch — it's preserved indefinitely.
+
+### Tooling
+
+- ESLint 9 (flat config) — 0 errors, 0 warnings
+- Stylelint 17 — 0 errors, 0 warnings
+- Sass migrated from `@import` (deprecated) to `@use`
+- Webpack 5 build still in place; **Vite migration planned for v4.1.0**
+
+---
+
 ## [3.0.0] - 2026-01-13
 
 ### Major Architecture & Developer Experience Release
