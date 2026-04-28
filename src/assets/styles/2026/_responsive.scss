@@ -27,8 +27,33 @@
 }
 
 @media (max-width: 720px) {
+  /* Sidebar becomes an off-canvas drawer.
+     Defaults: positioned off-screen left, slides in via .has-drawer-open. */
   .shell { grid-template-columns: 0 1fr; }
-  .d-sidebar { display: none; }
+  .d-sidebar {
+    position: fixed;
+    top: 0; left: 0;
+    width: 280px;
+    height: 100vh;
+    z-index: 100;                 /* above backdrop (90) */
+    transform: translateX(-100%);
+    transition: transform 240ms cubic-bezier(.2,.7,.2,1);
+    box-shadow: 0 12px 40px -8px rgb(0 0 0 / 0.4);
+
+    /* Restore full-width nav (override the 1100px collapse) */
+    padding: 22px 16px 18px;
+  }
+  .brand-text, .brand-tag, .nav-label, .nav-link > span:not(.nav-badge), .nav-link .nav-badge,
+  .workspace-text, .workspace-chev, .nav-submenu, .nav-link .chev { display: revert; }
+  .brand { justify-content: flex-start; padding: 4px 10px 20px; }
+  .nav-link { justify-content: flex-start; padding: 9px 12px; }
+  .workspace { justify-content: flex-start; padding: 6px 10px; }
+
+  body.has-drawer-open .d-sidebar { transform: translateX(0); }
+  body.has-drawer-open { overflow: hidden; }   /* lock scroll behind backdrop */
+
+  .hamburger { display: inline-flex; }
+
   .content { padding: 20px 16px 16px; }
   .d-topbar { padding: 0 16px; }
   .d-footer { padding: 20px 16px; flex-direction: column; gap: 10px; align-items: flex-start; }

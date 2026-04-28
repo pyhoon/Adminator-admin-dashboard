@@ -17,10 +17,12 @@ import { initShellBehaviors } from './init.js';
 import { initCharts } from './charts.js';
 import { initVectorMaps } from './maps.js';
 import { initCalendarPage } from './calendar.js';
+import { initPalette } from './palette.js';
 
 function start() {
   mountShell();
   initShellBehaviors();
+  initPalette();
   initCharts();
   initVectorMaps();
   initCalendarPage();

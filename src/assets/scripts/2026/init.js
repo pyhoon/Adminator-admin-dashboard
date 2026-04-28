@@ -114,6 +114,43 @@ function initTabGroups() {
   });
 }
 
+function initMobileDrawer() {
+  // Mobile: hamburger button (rendered in topbar at ≤720px) opens an off-canvas
+  // sidebar drawer. Closes on backdrop click, Esc, or selecting a nav link.
+  const body = document.body;
+  if (!body) return;
+
+  // Inject a backdrop element once (used by CSS via body.has-drawer-open).
+  if (!document.querySelector('.drawer-backdrop')) {
+    const backdrop = document.createElement('div');
+    backdrop.className = 'drawer-backdrop';
+    backdrop.setAttribute('aria-hidden', 'true');
+    body.appendChild(backdrop);
+    backdrop.addEventListener('click', closeDrawer);
+  }
+
+  function openDrawer() {
+    body.classList.add('has-drawer-open');
+  }
+  function closeDrawer() {
+    body.classList.remove('has-drawer-open');
+  }
+
+  document.addEventListener('click', (e) => {
+    const trigger = e.target.closest('[data-drawer-open]');
+    if (trigger) { e.preventDefault(); openDrawer(); return; }
+    // Auto-close when a sidebar nav link is selected (so the next page opens cleanly).
+    const linkInDrawer = e.target.closest('.d-sidebar a[href]:not([href^="#"]):not([href="javascript:void(0)"])');
+    if (body.classList.contains('has-drawer-open') && linkInDrawer) {
+      closeDrawer();
+    }
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && body.classList.contains('has-drawer-open')) closeDrawer();
+  });
+}
+
 export function initShellBehaviors() {
   initThemeToggle();
   initHeroDate();
@@ -122,4 +159,5 @@ export function initShellBehaviors() {
   initTodos();
   initAccordions();
   initTabGroups();
+  initMobileDrawer();
 }

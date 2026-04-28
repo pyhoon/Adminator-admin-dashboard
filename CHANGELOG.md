@@ -1,5 +1,62 @@
 # Changelog
 
+## [4.1.0] - 2026-04-28
+
+### Three quality fixes for the v4 release
+
+#### Command palette (⌘K / Ctrl+K)
+
+The "⌘K" search button in the topbar now actually opens a real command palette. Previously it was decorative.
+
+- Click the topbar search button, or press **⌘K / Ctrl+K** anywhere on the page, or press **/** when no input is focused
+- Searches every page in the NAV manifest plus a few global actions (toggle theme, view docs, view repo)
+- Keyboard navigation: ↑/↓ to move, Enter to select, Esc to close
+- Case-insensitive substring + ranked matching (exact > prefix > substring)
+- Closes on backdrop click, Esc, or selecting a result
+
+New module: `src/assets/scripts/2026/palette.js`. New SCSS partial: `_palette.scss`. The `NAV` manifest in `Shell.js` is now exported so the palette can read it.
+
+#### Mobile drawer
+
+The sidebar previously collapsed to `display: none` under 720px viewport with no way to open it — mobile users couldn't navigate at all. Now:
+
+- A hamburger button appears in the topbar at ≤720px (rendered by `Shell.js`)
+- Clicking it slides the sidebar in from the left as an off-canvas drawer
+- A semi-transparent backdrop appears behind the drawer
+- Closes on backdrop click, Esc, or selecting a real navigation link
+- Body scroll is locked while the drawer is open
+
+Implementation: `_responsive.scss` rewrites the ≤720px sidebar from `display: none` to `position: fixed; transform: translateX(-100%)` with a `.has-drawer-open` body class as the trigger. `init.js` adds an `initMobileDrawer()` function that handles the toggle + auto-close behavior.
+
+#### Test suite (75 tests)
+
+v3 had 65 tests for utility modules that no longer exist. This release adds a fresh suite covering the v4 modules:
+
+| Test file | Coverage |
+|-----------|----------|
+| `tests/shell.test.js` | NAV manifest validation, mountShell rendering, active state, breadcrumbs, hamburger + palette triggers, standalone-page no-op |
+| `tests/init.test.js` | Theme toggle (icon swap, persistence, dark/light flip), hero date, nav groups, dropdowns (open/close/escape/exclusivity), todos, accordions, tab groups, mobile drawer (open/close/Esc/backdrop/auto-close-on-link) |
+| `tests/palette.test.js` | open/close/isOpen, mounting (lazy + remount-after-detach), all triggers (button click, ⌘K, Ctrl+K, /), keyboard navigation (↑/↓ bounds), filtering (substring, case-insensitive, no-results), action execution (open external link, toggle theme) |
+| `tests/charts-seeds.test.js` | SEEDS export, every seed function returns a valid Chart.js config and references the tokens it received (so theme changes flow through) |
+
+Run with `npm run test:run` (one-shot) or `npm run test` (watch mode). Coverage report via `npm run test:coverage`.
+
+### Bug fixes shaken out by tests
+
+- **Palette listeners registered on every `initPalette()` call.** Multiple identical handlers fired per event, which cancelled out toggles (e.g. ⌘K to open then ⌘K to close). Added `_initialized` guard so listeners attach exactly once per page.
+- **Palette cached stale DOM refs after `<body>` reset.** When `<body>` was wiped (e.g. between tests, or by user code), the cached `modal/input/resultsEl` references pointed to detached nodes. `ensureMounted()` now checks `document.contains(modal)` and re-mounts if needed.
+
+### Other
+
+- `vitest.config.js` updated to scope coverage to `src/assets/scripts/2026/**` and exclude the entry file
+- `tests/setup.js` provides an in-memory localStorage mock (jsdom 29 ships without one) and a `matchMedia` stub
+
+### Build size
+
+Practically unchanged — the palette adds ~1.2 KB minified JS and ~1.1 KB minified CSS. Drawer adds <1 KB to JS, ~600 bytes to CSS. Test files don't ship.
+
+---
+
 ## [4.0.1] - 2026-04-28
 
 ### Documentation rewrite

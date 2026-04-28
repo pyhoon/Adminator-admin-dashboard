@@ -19,7 +19,7 @@
  * NAV is the single source of truth — adding a page is one entry here.
  */
 
-const NAV = [
+export const NAV = [
   {
     label: 'Workspace',
     items: [
@@ -167,9 +167,14 @@ function renderCrumbs(crumbsAttr) {
 function renderTopbar(crumbsAttr) {
   return `
     <header class="d-topbar">
-      <div class="crumbs">${renderCrumbs(crumbsAttr)}</div>
+      <div class="crumbs">
+        <button class="hamburger" data-drawer-open aria-label="Open navigation">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+        ${renderCrumbs(crumbsAttr)}
+      </div>
       <div class="topbar-actions">
-        <button class="cmd">
+        <button class="cmd" data-palette-open>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
           <span>Search...</span>
           <kbd class="kbd">⌘K</kbd>

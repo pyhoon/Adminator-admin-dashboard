@@ -51,7 +51,7 @@ function applyDefaults(t) {
   Chart.defaults.plugins.tooltip.displayColors = false;
 }
 
-const SEEDS = {
+export const SEEDS = {
   'revenue-line': (t) => ({
     type: 'line',
     data: {
