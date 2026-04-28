@@ -1,5 +1,41 @@
 # Changelog
 
+## [4.0.1] - 2026-04-28
+
+### Documentation rewrite
+
+Full rewrite of the documentation site at <https://puikinsh.github.io/Adminator-admin-dashboard/> for the v4 architecture. Removes all v3-era references (Bootstrap, AdminatorApp, Sidebar component, Theme JS module, DOM/Events/Storage utility classes).
+
+**New pages:**
+
+- **Architecture** — page anatomy, Shell.js renderer, boot sequence
+- **Components reference** — every UI primitive with markup (buttons, alerts, badges, forms, tabs, accordions, modals, dropdowns, tables)
+- **Library integrations** — how Chart.js / FullCalendar / jsvectormap stay theme-aware
+- **Pages reference** — what each of the 18 pages contains
+- **Migration from v3** — full v3 → v4 mapping (CSS vars, classes, JS APIs)
+- **Adding a new page** — three-step recipe
+
+**Rewritten pages:**
+
+- Home, Getting started flow (installation, project structure, development, production build)
+- Token system (the new `_tokens.scss` reference replacing v3's CSS variable docs)
+- JavaScript API reference (Shell.js, init.js, charts.js, calendar.js, maps.js)
+- Practical recipes (replaces "Theme integration examples")
+- Component dev guide (was COMPONENT_GUIDE.md)
+
+Also publishes the content/listing scripts under `scripts/`:
+
+- `screenshots-for-posts.mjs` — Playwright captures at exact target dimensions
+- `publish-post-screenshots.mjs` — swaps existing post images and bumps publish dates
+- `insert-adminator-listings.mjs` — inserts new entries into listicle posts
+- `move-adminator-position.mjs` — reorders a listicle entry's position
+
+And the `screenshots/posts/` library used by the publish pipeline.
+
+No source changes — all 18 pages, the JS modules, and the SCSS partials are unchanged from v4.0.0. This is a documentation-only release.
+
+---
+
 ## [4.0.0] - 2026-04-27
 
 ### The 2026 Redesign
