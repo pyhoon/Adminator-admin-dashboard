@@ -1,462 +1,131 @@
-# Development Workflow
-
-This guide covers the development workflow for working with Adminator, including running the development server, making changes, and best practices.
-
-## Table of Contents
-
-- Quick Start
-- Development Server
-- Available npm Scripts
-- Making Changes
-- Hot Module Replacement
-- Code Quality & Linting
-- Debugging
-- Working with Components
-- Working with Styles
-- Best Practices
-- Common Issues
-- Next Steps
-
-## Quick Start
-
-After [installation](installation.md), start the development server:
-
-```bash
-npm start
-```
-
-Your application will be available at **http://localhost:4000**
-
-## Development Server
-
-### Standard Development Server
-
-The standard development server includes hot module replacement (HMR) for instant updates:
-
-```bash
-npm start
-```
-
-**Features:**
-- Hot module replacement (HMR)
-- Automatic browser refresh
-- Source maps for debugging
-- Fast rebuild times
-- Runs on port 4000
-
-### Development Server with Dashboard
-
-For enhanced development experience with visual feedback:
-
-```bash
-npm run dev
-```
-
-**Additional Features:**
-- Visual webpack dashboard
-- Real-time build statistics
-- Bundle size analysis
-- Build time metrics
-- Module dependency graph
-
-## Available npm Scripts
-
-### Development
-
-| Command | Description |
-|---------|-------------|
-| `npm start` | Start development server with HMR |
-| `npm run dev` | Start development server with webpack dashboard |
-| `npm run clean` | Clean the `dist/` directory |
-
-### Production Build
-
-| Command | Description |
-|---------|-------------|
-| `npm run build` | Production build (optimized, minified) |
-| `npm run release:minified` | Production build with minification |
-| `npm run release:unminified` | Production build without minification (for debugging) |
-| `npm run preview` | Preview production build locally |
-
-### Code Quality
-
-| Command | Description |
-|---------|-------------|
-| `npm run lint` | Run all linters (JavaScript + SCSS) |
-| `npm run lint:js` | Lint JavaScript files with ESLint |
-| `npm run lint:scss` | Lint SCSS files with Stylelint |
-
-## Making Changes
-
-### File Watching
-
-The development server automatically watches for changes in:
-
-- **HTML files** (`src/*.html`)
-- **JavaScript files** (`src/assets/scripts/**/*.js`)
-- **SCSS files** (`src/assets/styles/**/*.scss`)
-- **Static assets** (`src/assets/static/**/*`)
-
-Changes are automatically compiled and the browser refreshes.
-
-### Workflow
-
-1. **Start the development server**
-   ```bash
-   npm start
-   ```
-
-2. **Make your changes** in the `src/` directory
-
-3. **Save the file** - Changes are automatically detected
-
-4. **Browser refreshes** - See your changes instantly
-
-## Hot Module Replacement (HMR)
-
-HMR allows modules to be updated without a full page reload, preserving application state.
-
-### What Gets Hot Reloaded?
-
-- ✅ **JavaScript modules** - Component updates without page reload
-- ✅ **SCSS/CSS** - Style updates without page reload
-- ⚠️ **HTML files** - Requires full page reload
-- ⚠️ **Configuration files** - Requires server restart
-
-### HMR Benefits
-
-- Faster development cycle
-- Preserves application state
-- Instant visual feedback
-- Better debugging experience
-
-## Code Quality & Linting
-
-### JavaScript Linting (ESLint)
-
-Adminator uses ESLint 9.x with flat configuration:
-
-```bash
-# Lint all JavaScript files
-npm run lint:js
-
-# Auto-fix issues (if possible)
-npx eslint ./src --fix
-```
-
-**Configuration:** `eslint.config.mjs`
-
-**Rules:**
-- ES6+ modern JavaScript
-- No jQuery patterns
-- Consistent code style
-- Import/export validation
-
-### SCSS Linting (Stylelint)
-
-Maintain consistent SCSS code style:
-
-```bash
-# Lint all SCSS files
-npm run lint:scss
-
-# Auto-fix issues (if possible)
-npx stylelint "./src/**/*.scss" --fix
-```
-
-**Configuration:** `.stylelintrc.json`
-
-### Running All Linters
-
-```bash
-npm run lint
-```
-
-This runs both JavaScript and SCSS linters in sequence.
-
-## Debugging
-
-### Source Maps
-
-Development builds include source maps for easier debugging:
-
-1. Open browser DevTools (F12)
-2. Navigate to Sources tab
-3. Find your original source files under `webpack://`
-4. Set breakpoints and debug as normal
-
-### Console Logging
-
-The application includes minimal console output in production. For development debugging:
-
-```javascript
-// Development-only logging
-if (process.env.NODE_ENV !== 'production') {
-  console.log('Debug info:', data);
-}
-```
-
-### Browser DevTools
-
-**Recommended Extensions:**
-- React Developer Tools (if using React components)
-- Vue.js devtools (if using Vue components)
-- Redux DevTools (if using Redux)
-
-## Working with Components
-
-### Creating a New Component
-
-1. **Create component file** in `src/assets/scripts/components/`:
-
-```javascript
-// src/assets/scripts/components/MyComponent.js
-class MyComponent {
-  constructor(element) {
-    this.element = element;
-    this.init();
-  }
-
-  init() {
-    // Initialize component
-    this.setupEventListeners();
-  }
-
-  setupEventListeners() {
-    // Add event listeners
-  }
-
-  destroy() {
-    // Cleanup
-  }
-}
-
-export default MyComponent;
-```
-
-2. **Import and use** in `app.js`:
-
-```javascript
-import MyComponent from '@/components/MyComponent';
-
-// Initialize
-const myComponent = new MyComponent(document.querySelector('.my-component'));
-```
-
-3. **Add component styles** in `src/assets/styles/spec/components/`:
-
-```scss
-// src/assets/styles/spec/components/myComponent.scss
-.my-component {
-  // Component styles
-}
-```
-
-4. **Import styles** in `src/assets/styles/spec/components/index.scss`:
-
-```scss
-@import 'myComponent';
-```
-
-### Component Best Practices
-
-- Use ES6 classes for components
-- Keep components focused and single-purpose
-- Implement `destroy()` method for cleanup
-- Use webpack aliases (`@/components`, `@/utils`)
-- Follow existing naming conventions
-
-## Working with Styles
-
-### SCSS Architecture
-
-Adminator follows ITCSS (Inverted Triangle CSS) methodology:
-
-```
-styles/
-├── settings/    # Variables, config
-├── tools/       # Mixins, functions
-├── generic/     # Reset, normalize
-├── components/  # UI components
-├── utils/       # Utility classes
-└── vendor/      # Third-party styles
-```
-
-### Adding New Styles
-
-1. **Component styles** → `src/assets/styles/spec/components/`
-2. **Page-specific styles** → `src/assets/styles/spec/screens/`
-3. **Utility classes** → `src/assets/styles/spec/utils/`
-
-### Using CSS Variables
-
-Adminator uses CSS custom properties for theming:
-
-```scss
-.my-component {
-  background: var(--c-bkg-card);
-  color: var(--c-text-base);
-  border: 1px solid var(--c-border);
-}
-```
-
-**Available variables:** See `src/assets/styles/spec/utils/theme.css`
-
-### Dark Mode Support
-
-Ensure your components support dark mode:
-
-```scss
-.my-component {
-  background: var(--c-bkg-card); // Auto-adjusts for dark mode
-  
-  // Or use data attribute
-  [data-theme="dark"] & {
-    background: #1f2937;
-  }
-}
-```
-
-## Best Practices
-
-### Code Organization
-
-- ✅ Keep files small and focused
-- ✅ Use meaningful file and variable names
-- ✅ Group related functionality
-- ✅ Follow existing project structure
-- ✅ Use webpack aliases for imports
-
-### JavaScript
-
-- ✅ Use modern ES6+ features
-- ✅ Avoid jQuery patterns
-- ✅ Use vanilla JavaScript DOM APIs
-- ✅ Implement proper error handling
-- ✅ Add JSDoc comments for complex functions
-
-### SCSS
-
-- ✅ Use variables for colors and spacing
-- ✅ Follow BEM naming convention (optional)
-- ✅ Keep selectors shallow (max 3 levels)
-- ✅ Use mixins for repeated patterns
-- ✅ Support dark mode with CSS variables
-
-### Performance
-
-- ✅ Minimize DOM manipulations
-- ✅ Use event delegation
-- ✅ Debounce/throttle frequent events
-- ✅ Lazy load heavy components
-- ✅ Optimize images and assets
-
-### Accessibility
-
-- ✅ Use semantic HTML
-- ✅ Add ARIA labels where needed
-- ✅ Ensure keyboard navigation
-- ✅ Maintain color contrast ratios
-- ✅ Test with screen readers
-
-## Common Issues
-
-### Port Already in Use
-
-If port 4000 is already in use:
-
-```bash
-# Kill the process using port 4000 (Windows)
-netstat -ano | findstr :4000
-taskkill /PID <PID> /F
-
-# Or change the port in webpack/devServer.js
-```
-
-### Changes Not Reflecting
-
-1. **Hard refresh** the browser (Ctrl+F5)
-2. **Clear browser cache**
-3. **Restart development server**
-4. **Check for JavaScript errors** in console
-5. **Verify file is being watched** (check terminal output)
-
-### Build Errors
-
-```bash
-# Clean and rebuild
-npm run clean
-npm install
-npm start
-```
-
-### Linting Errors
-
-```bash
-# Auto-fix common issues
-npx eslint ./src --fix
-npx stylelint "./src/**/*.scss" --fix
-
-# Check remaining issues
-npm run lint
-```
-
-### Module Not Found
-
-```bash
-# Reinstall dependencies
-rm -rf node_modules package-lock.json
-npm install
-```
-
-## Development Tips
-
-### 1. Use the Webpack Dashboard
-
-```bash
-npm run dev
-```
-
-Provides visual feedback on build performance and bundle size.
-
-### 2. Keep the Console Clean
-
-Fix warnings and errors as they appear to maintain code quality.
-
-### 3. Test in Multiple Browsers
-
-- Chrome/Edge (Chromium)
-- Firefox
-- Safari (if on macOS)
-- Mobile browsers (responsive mode)
-
-### 4. Use Browser DevTools
-
-- **Elements tab** - Inspect and modify DOM/CSS
-- **Console tab** - Debug JavaScript
-- **Network tab** - Monitor requests
-- **Performance tab** - Profile performance
-- **Application tab** - Check localStorage/theme
-
-### 5. Commit Often
-
-Make small, focused commits with clear messages:
-
-```bash
-git add .
-git commit -m "feat: add new dashboard widget"
-git push
-```
-
-## Next Steps
-
-Now that you understand the development workflow:
-
-1. **[Customize Themes](../customization/theme-system.md)** - Set up dark mode and theming
-2. **[Build for Production](build-deployment.md)** - Deploy your application
-3. **[API Reference](../api/theme-api.md)** - JavaScript API documentation
-4. **[Project Structure](project-structure.md)** - Review the codebase structure
+---
+layout: default
+title: Development
+nav_order: 3
+parent: Getting started
+---
+
+# Development workflow
+{: .no_toc }
+
+## Table of contents
+{: .no_toc .text-delta }
+
+1. TOC
+{:toc}
 
 ---
 
-**Need Help?** Check the [main README](../../README.md) or [open an issue](https://github.com/puikinsh/Adminator-admin-dashboard/issues).
+## Dev server
+
+```bash
+npm start
+```
+
+Webpack dev server on <http://localhost:4000>. Edits to `src/**/*.html`, `src/assets/scripts/2026/*.js`, or `src/assets/styles/2026/*.scss` trigger an auto-rebuild and full-page reload (no HMR for HTML — that's a webpack-dev-server limitation, not a project choice).
+
+For more verbose dev output:
+
+```bash
+npm run dev   # webpack-dashboard wrapper
+```
+
+## All npm scripts
+
+| Script | What it does |
+|--------|--------------|
+| `npm start` | Dev server on `:4000` with file-watch + auto-reload |
+| `npm run dev` | Dev server with the webpack-dashboard UI |
+| `npm run build` | Production build to `dist/`, **un**minified (good for debugging output) |
+| `npm run release:minified` | Production build with full minification (Terser + cssnano) |
+| `npm run release:unminified` | Same as `build`, explicit `NODE_ENV=production` |
+| `npm run preview` | Re-runs the dev server |
+| `npm run clean` | Wipes `dist/` |
+| `npm run lint` | ESLint + Stylelint, must be 0/0 |
+| `npm run lint:js` | ESLint only |
+| `npm run lint:scss` | Stylelint only |
+| `npm run build:analyze` | Build with `webpack-bundle-analyzer` (opens an interactive treemap) |
+| `npm run screenshots` | Generate the README screenshots (requires `npm start` running) |
+
+## Making changes
+
+### Edit a color or any visual token
+
+Open `src/assets/styles/2026/_tokens.scss`. All visual decisions live here — colors, font sizes, spacing, shadows. Light + dark variants are defined under `:root[data-theme="light"]` and `:root[data-theme="dark"]`.
+
+Example — change the brand color:
+
+```scss
+:root[data-theme="light"] {
+  --primary:       #2563EB;     // ← old
+  --primary:       #DB2777;     // ← new (pink)
+  --primary-soft:  #FDF2F8;     // bump the soft variant too
+}
+```
+
+Save the file. The dev server rebuilds (~1 sec) and the page reloads with the new color applied to every component on every page.
+
+### Edit a single page
+
+Pages are static HTML in `src/*.html`. Each page imports nothing — the shell, JS, and CSS are wired in by webpack via HtmlWebpackPlugin. Just edit the page's content (everything inside `<main class="content">`) and save.
+
+### Edit shell behavior (sidebar item, breadcrumbs, etc.)
+
+For sidebar items, edit `src/assets/scripts/2026/Shell.js` (the `NAV` array at the top). For breadcrumbs / which sidebar item is highlighted, set `data-active` and `data-crumbs` on each page's `<body>`.
+
+For runtime behaviors (theme toggle, dropdown click, accordion expand), edit `src/assets/scripts/2026/init.js`.
+
+## Linting
+
+Both linters must be 0 errors / 0 warnings before merging:
+
+```bash
+npm run lint
+```
+
+ESLint 9 (flat config in `eslint.config.mjs`) handles JS. Stylelint 17 (`.stylelintrc.json`) handles SCSS.
+
+The CI hook on `prepublishOnly` runs both — `npm publish` will refuse to ship a dirty tree.
+
+### Fixing lint failures
+
+Most stylelint issues are auto-fixable:
+
+```bash
+npx stylelint "src/**/*.scss" --fix
+```
+
+ESLint similarly:
+
+```bash
+npx eslint src/ --fix
+```
+
+## Tests
+
+Currently none. v3's tests covered the `utils/` modules that were deleted in v4. A new test suite for `init.js`, `Shell.js`, `charts.js`, `calendar.js`, `maps.js` is on the roadmap but not yet shipped.
+
+If you want to write tests, vitest is already in `devDependencies`; create `tests/<thing>.test.js` and run `npm run test` (or `npm run test:run` for one-shot).
+
+## Browser support
+
+Modern evergreen browsers — Chrome, Firefox, Safari, Edge (last 2 versions). The template uses `color-mix()`, `aspect-ratio`, CSS custom properties, and modern flex/grid. IE11 isn't supported and won't be.
+
+If you need to drop a browser version that supports the above, edit the `browserslist` field in `package.json` — Babel and Autoprefixer use it.
+
+## Theme switching while developing
+
+The dev page has a moon/sun icon in the topbar. Click to toggle. The choice persists in `localStorage` (`dash26-theme` key) and `data-theme` flips on `<html>`.
+
+To force a specific starting theme during dev (without clicking), open DevTools console:
+
+```js
+localStorage.setItem('dash26-theme', 'dark'); location.reload();
+```
+
+## Hot tips
+
+- **Open multiple pages at once.** All 18 pages share the same bundle, so once the dev server is warm, navigation is instant. Have `email.html`, `calendar.html`, `forms.html` open in separate tabs.
+- **Inspect a token.** In DevTools → Elements → `<html>`, the Computed pane shows every `--token` value for the active theme. Useful for picking the right one when styling something new.
+- **Find which CSS partial owns a class.** Each partial in `src/assets/styles/2026/` is named after its scope (`_chat.scss` for `.chat-*` classes, `_data.scss` for `.data-table` etc.). Grep is fastest: `grep -rn '.btn--primary' src/assets/styles/2026/`.
+- **Bundle too big?** Run `npm run build:analyze` and the treemap will show what's bloating it. Most of the bundle is FullCalendar (~250 KB) and Chart.js (~190 KB) — those are real features, not dead weight.

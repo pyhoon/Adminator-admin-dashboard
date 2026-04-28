@@ -1,8 +1,8 @@
 # GitHub Pages Configuration for Adminator Documentation
 
 # Site settings
-title: "Adminator Documentation"
-description: "Complete guide for the Adminator Bootstrap 5 Admin Dashboard Template with Dark Mode"
+title: "Adminator 4 Documentation"
+description: "Complete guide for Adminator 4.0 — vanilla-JS admin dashboard with a token-driven CSS-variable design system. No jQuery, no Bootstrap."
 url: "https://puikinsh.github.io"
 baseurl: "/Adminator-admin-dashboard"
 
@@ -38,7 +38,7 @@ sass:
 heading_anchors: true
 
 # Footer
-footer_content: "Copyright &copy; 2025 Colorlib. Distributed by an <a href=\"https://github.com/puikinsh/Adminator-admin-dashboard/blob/master/LICENSE\">MIT license.</a>"
+footer_content: "Copyright &copy; 2026 Colorlib. Distributed under an <a href=\"https://github.com/puikinsh/Adminator-admin-dashboard/blob/master/LICENSE\">MIT license.</a>"
 
 # Back to top link
 back_to_top: true
@@ -76,6 +76,7 @@ exclude:
   - vendor/cache/
   - vendor/gems/
   - vendor/ruby/
+  - README.md
 
 # Code highlighting
 kramdown:

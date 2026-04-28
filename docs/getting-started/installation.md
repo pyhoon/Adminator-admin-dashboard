@@ -2,10 +2,10 @@
 layout: default
 title: Installation
 nav_order: 1
-parent: Getting Started
+parent: Getting started
 ---
 
-# Installation Guide
+# Installation
 {: .no_toc }
 
 ## Table of contents
@@ -16,181 +16,84 @@ parent: Getting Started
 
 ---
 
-This guide will help you get Adminator up and running on your local machine.
-
 ## Prerequisites
 
-Before installing Adminator, ensure you have the following installed:
+| Tool | Version | Notes |
+|------|---------|-------|
+| **Node.js** | 18.12+ (LTS recommended) | Tested through Node 24 |
+| **npm** | 9+ (ships with Node) | Yarn / pnpm work too |
+| **Git** | any recent version | Only for cloning |
 
-### Required Software
-
-- **Node.js** (v18.12.0 or higher)
-  - Download from [nodejs.org](https://nodejs.org/)
-  - Verify installation: `node --version`
-- **npm** (comes with Node.js) or **Yarn**
-  - Verify npm: `npm --version`
-- **Git** for version control
-  - Download from [git-scm.com](https://git-scm.com/)
-
-### System Requirements
-
-- **Operating System**: Windows 10+, macOS 10.14+, or Linux
-- **RAM**: Minimum 4GB (8GB recommended for development)
-- **Storage**: 500MB free space for dependencies
-
-## Installation Methods
-
-### Method 1: Clone from GitHub (Recommended)
+Check your versions:
 
 ```bash
-# Clone the repository
-git clone https://github.com/puikinsh/Adminator-admin-dashboard.git
+node --version   # >= v18.12.0
+npm --version    # >= 9.0.0
+```
 
-# Navigate to the project directory
-cd Adminator-admin-dashboard
+If Node is older, use [nvm](https://github.com/nvm-sh/nvm) (`nvm install --lts`) or [Volta](https://volta.sh/) (`volta install node@lts`).
 
-# Install dependencies
+## Option 1 — Clone the repo (recommended)
+
+```bash
+git clone https://github.com/puikinsh/Adminator-admin-dashboard.git adminator
+cd adminator
 npm install
-
-# Start development server
 npm start
 ```
 
-### Method 2: Download ZIP
+Open <http://localhost:4000> — the dashboard appears.
 
-1. Visit the [GitHub repository](https://github.com/puikinsh/Adminator-admin-dashboard)
-2. Click **"Code"** → **"Download ZIP"**
-3. Extract the downloaded file
-4. Open terminal in the extracted folder
-5. Run `npm install` and `npm start`
+The dev server runs on port 4000 by default. To change it, edit `webpack/devServer.js`.
 
-### Method 3: Use with Existing Project
+## Option 2 — npm package
 
 ```bash
-# Add Adminator to your project
-npm install --save adminator
-
-# Or download specific release
-wget https://github.com/puikinsh/Adminator-admin-dashboard/archive/v2.6.0.zip
+npm install adminator-admin-dashboard
 ```
 
-## Verification
+The published package includes both `src/` (source) and `dist/` (pre-built production output). Use `dist/` directly if you only need the static HTML/CSS/JS, or copy `src/` into your project to customize.
 
-After installation, verify everything works:
+## Option 3 — Download the prebuilt zip
 
-### 1. Development Server
+Each release attaches a built `dist.zip` to the GitHub release. Grab it from <https://github.com/puikinsh/Adminator-admin-dashboard/releases> for a static-hosting drop-in (no Node required).
+
+## Want the v3 (Bootstrap-based) version?
+
+The v3 codebase is preserved on the [`legacy-v3`](https://github.com/puikinsh/Adminator-admin-dashboard/tree/legacy-v3) branch and the [`v3.0.0`](https://github.com/puikinsh/Adminator-admin-dashboard/releases/tag/v3.0.0) tag, with security updates for at least 12 months.
+
 ```bash
-npm start
+# Clone v3 directly
+git clone -b legacy-v3 https://github.com/puikinsh/Adminator-admin-dashboard.git adminator-v3
+
+# Or pin v3 from npm
+npm install adminator-admin-dashboard@^3
 ```
 
-**Expected Output:**
-```
-> adminator@2.6.0 start
-> webpack server
+## Verify the install
 
-✓ Project is running at: http://localhost:4000/
-✓ webpack compiled successfully
-```
+After `npm install` finishes, you should see:
 
-### 2. Build Process
-```bash
-npm run build
+```text
+added 1067 packages, and audited 1068 packages in Xs
 ```
 
-**Expected Output:**
+Then `npm start` should print:
+
+```text
+[webpack-dev-server] Project is running at:
+[webpack-dev-server] Loopback: http://localhost:4000/
+webpack compiled successfully in ~3000 ms
 ```
-> adminator@2.6.0 build
-> npm run clean && cross-env webpack
 
-✓ webpack compiled successfully in [time]ms
-```
-
-### 3. Access the Application
-
-Open your browser and navigate to:
-- **Local**: `http://localhost:4000`
-- **Network**: `http://[your-ip]:4000`
-
-You should see the Adminator dashboard with:
-- ✅ Clean interface loading properly
-- ✅ Dark/Light mode toggle in the header
-- ✅ All components rendering correctly
-- ✅ No console errors
+If compilation succeeds and you see the dashboard at <http://localhost:4000>, you're set up. Continue to [Project structure](project-structure).
 
 ## Troubleshooting
 
-### Common Issues
+**Port 4000 in use?** Either kill the process holding it (`lsof -ti :4000 | xargs kill`) or change the port in `webpack/devServer.js`.
 
-#### Port Already in Use
-```bash
-# Error: EADDRINUSE: address already in use :::4000
-# Solution: Kill the process using port 4000
-sudo lsof -ti:4000 | xargs kill -9
+**`sass` errors during install?** Make sure your Node is 18.12 or newer. Older Node versions can't build the latest sass binary.
 
-# Or use a different port
-PORT=3000 npm start
-```
+**Permission errors on macOS / Linux?** Don't `sudo npm install` — fix npm's permissions instead. See [the npm docs on this](https://docs.npmjs.com/resolving-eacces-permissions-errors-when-installing-packages-globally).
 
-#### Node Version Issues
-```bash
-# Check your Node.js version
-node --version
-
-# If version is below 18.12.0, update Node.js
-# Use nvm (recommended):
-nvm install 18
-nvm use 18
-```
-
-#### Permission Errors
-```bash
-# On macOS/Linux, you might need sudo for global packages
-sudo npm install -g npm@latest
-
-# Better solution: Fix npm permissions
-npm config set prefix ~/.npm-global
-export PATH=~/.npm-global/bin:$PATH
-```
-
-#### Missing Dependencies
-```bash
-# Clear npm cache and reinstall
-npm cache clean --force
-rm -rf node_modules package-lock.json
-npm install
-```
-
-#### Build Errors
-```bash
-# Check for conflicting global packages
-npm list -g --depth=0
-
-# Update npm and dependencies
-npm update
-npm audit fix
-```
-
-### Getting Help
-
-If you encounter issues:
-
-1. **Check the [GitHub Issues](https://github.com/puikinsh/Adminator-admin-dashboard/issues)**
-2. **Search existing solutions**
-3. **Create a new issue** with:
-   - Operating system and version
-   - Node.js and npm versions
-   - Complete error message
-   - Steps to reproduce
-
-## Next Steps
-
-After successful installation:
-
-1. **[Explore Project Structure](project-structure.md)** - Understand the codebase
-2. **[Development Workflow](development.md)** - Learn the development process
-3. **[Customize Themes](../customization/theme-system.md)** - Set up dark mode and theming
-4. **[Build for Production](build-deployment.md)** - Deploy your application
-
----
-
-**Installation Complete!** 🎉 You're ready to start building with Adminator. 
+**Slow install on Windows?** Add the project folder to Windows Defender's exclusion list — antivirus scanning of `node_modules` is the usual culprit.

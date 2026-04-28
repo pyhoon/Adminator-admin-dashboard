@@ -1,12 +1,15 @@
 ---
 layout: default
 title: Examples
-nav_order: 5
+nav_order: 6
 has_children: true
+permalink: /examples/
 ---
 
 # Examples
 
-Practical examples and integration guides.
+Concrete recipes for the things people actually do.
 
-This section provides real-world examples of using Adminator in various scenarios and frameworks. 
+## Pages in this section
+
+- **[Practical recipes](theme-integration)** — adding pages, sidebar items, charts, calendar events, custom alerts; reacting to theme changes; building custom layouts with the existing grid

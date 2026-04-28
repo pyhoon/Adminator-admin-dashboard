@@ -1,609 +1,303 @@
-# Component Development Guide
+---
+layout: default
+title: Component dev guide
+nav_order: 10
+---
 
-This guide explains how to create new components for the Adminator admin dashboard, following the established patterns and best practices.
+# Component development guide
+{: .no_toc }
 
-## Table of Contents
+## Table of contents
+{: .no_toc .text-delta }
 
-- [Architecture Overview](#architecture-overview)
-- [Creating a New Component](#creating-a-new-component)
-- [Component Lifecycle](#component-lifecycle)
-- [Theme Integration](#theme-integration)
-- [Event Handling](#event-handling)
-- [Mobile Considerations](#mobile-considerations)
-- [Testing Components](#testing-components)
+1. TOC
+{:toc}
 
 ---
 
-## Architecture Overview
+This guide is for people **adding new UI components** to Adminator 4 — not for using existing ones (that's covered in [Components reference](customization/components)).
 
-Adminator uses a class-based component architecture with the following structure:
-
-```
-src/assets/scripts/
-├── app.js                 # Main application controller
-├── components/            # Reusable UI components
-│   ├── Sidebar.js
-│   └── Chart.js
-├── utils/                 # Utility modules
-│   ├── dom.js            # DOM manipulation
-│   ├── theme.js          # Theme management
-│   ├── events.js         # Event handling
-│   ├── performance.js    # Performance utilities
-│   ├── logger.js         # Development logging
-│   └── date.js           # Date utilities
-└── [feature modules]      # Feature-specific code
-```
-
-### Key Principles
-
-1. **No jQuery** - Use vanilla JS and the `DOM` utility
-2. **Event Delegation** - Use `Events.delegate()` for performance
-3. **Theme Awareness** - Support light/dark modes via CSS variables
-4. **Cleanup** - Always provide a `destroy()` method
-5. **Mobile First** - Consider touch interactions
+The v3 era of "register a component class with `AdminatorApp`" is over. v4 components are CSS classes plus, optionally, a small init function in `init.js`.
 
 ---
 
-## Creating a New Component
+## What "component" means in v4
 
-### Step 1: Create the Component File
+There are three possible levels of component:
 
-Create a new file in `src/assets/scripts/components/`:
+1. **Pure CSS** — A class (or set) in one of the SCSS partials. No JS. Render-time behavior only. Most components fall here: buttons, cards, alerts, badges, progress bars.
 
-```javascript
+2. **CSS + light JS** — A class plus a behavior in `init.js`. The behavior is wired by attribute (`[data-X]`) so it self-discovers on every page. Examples: tab groups, accordions, dropdowns.
+
+3. **CSS + dedicated JS module** — A new module file under `src/assets/scripts/2026/`. Used when the component wraps an external library or has its own non-trivial state. Current examples: `charts.js`, `calendar.js`, `maps.js`.
+
+Pick the lowest level that meets your needs. Levels 1 and 2 are appropriate for 95% of cases.
+
+---
+
+## Recipe — pure CSS component
+
+Goal: add a "stat-tile" — a small inline KPI display.
+
+### 1. Decide where the styles live
+
+Pick the right partial:
+
+| Partial | When to use |
+|---------|-------------|
+| `_components.scss` | Generic primitive used across pages |
+| `_ui.scss` | UI primitive (alert/badge/progress/spinner family) |
+| `_forms.scss` | Anything form-input-shaped |
+| `_dashboard.scss` | Dashboard-specific |
+| `_email.scss` / `_calendar.scss` / `_chat.scss` | Page-specific |
+
+For a generic stat tile usable anywhere, that's `_components.scss`.
+
+### 2. Write the styles
+
+```scss
+/* in _components.scss */
+
+.stat-tile {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 14px 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+.stat-tile-label {
+  font-size: 11px;
+  color: var(--t-light);
+  font-family: 'JetBrains Mono', monospace;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.stat-tile-value {
+  font-family: 'Inter Tight', sans-serif;
+  font-weight: 700;
+  font-size: 18px;
+  color: var(--t-base);
+  letter-spacing: -0.02em;
+}
+
+.stat-tile-delta {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--t-muted);
+  margin-left: auto;
+}
+.stat-tile-delta.up   { color: var(--success); }
+.stat-tile-delta.down { color: var(--danger); }
+```
+
+### 3. Use it
+
+```html
+<div class="stat-tile">
+  <span class="stat-tile-label">MRR</span>
+  <span class="stat-tile-value">$84.2K</span>
+  <span class="stat-tile-delta up">+12%</span>
+</div>
+```
+
+### 4. Done
+
+That's the whole component. Save the file, the dev server rebuilds. The tile works in light + dark mode automatically because every color is `var(--…)`.
+
+---
+
+## Recipe — CSS + light JS
+
+Goal: add a "show password" eye toggle on password inputs.
+
+### 1. Decide on a data attribute
+
+Use a `data-X` attribute as the marker. Convention: `data-show-password` on the password input.
+
+```html
+<input class="input" type="password" data-show-password>
+```
+
+### 2. Add the toggle behavior
+
+In `init.js`, add an init function and call it from `initShellBehaviors()`:
+
+```js
+// inside init.js
+
+function initShowPassword() {
+  document.querySelectorAll('input[data-show-password]').forEach((input) => {
+    // Wrap the input in a relative container with a button
+    const wrap = document.createElement('div');
+    wrap.style.position = 'relative';
+    input.parentNode.insertBefore(wrap, input);
+    wrap.appendChild(input);
+
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.setAttribute('aria-label', 'Show password');
+    btn.style.cssText = 'position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:0;color:var(--t-muted);cursor:pointer;';
+    btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
+    wrap.appendChild(btn);
+
+    btn.addEventListener('click', () => {
+      input.type = input.type === 'password' ? 'text' : 'password';
+    });
+  });
+}
+
+export function initShellBehaviors() {
+  initThemeToggle();
+  initHeroDate();
+  initNavGroups();
+  initDropdowns();
+  initTodos();
+  initAccordions();
+  initTabGroups();
+  initShowPassword();   // ← add this
+}
+```
+
+### 3. Use it
+
+```html
+<input class="input" type="password" data-show-password>
+```
+
+The toggle appears automatically on every page that has a `data-show-password` input.
+
+### Patterns to follow
+
+- **Always use `data-X` attributes**, never `id`s. Multiple instances on a page should work without conflict.
+- **Always use `if (!el) return;` guards.** `init.js` runs on every page, but most pages don't have most components.
+- **Don't store state on the DOM element.** Use closures or external Maps if you need per-element state.
+- **Prefer one-shot listeners over delegation.** Adminator pages are static; rebinding on dynamic content isn't a concern. (If you do need delegation, attach to `document`.)
+- **Don't block paint.** `init.js` runs after `DOMContentLoaded` — heavy work should be deferred via `requestIdleCallback` or `setTimeout(fn, 0)`.
+
+---
+
+## Recipe — dedicated module (heavy library or stateful)
+
+Goal: integrate a new library (e.g. ECharts) with theme awareness.
+
+### 1. Create the module
+
+`src/assets/scripts/2026/echarts.js`:
+
+```js
 /**
- * MyComponent - Description of what it does
- *
- * @module components/MyComponent
+ * ECharts wiring for Adminator.
+ * Pages declare charts as <div data-echart="key"></div>.
  */
 
-import { DOM } from '../utils/dom';
-import Events from '../utils/events';
-import Logger from '../utils/logger';
+import * as echarts from 'echarts';
 
-class MyComponent {
-  /**
-   * Create a MyComponent instance
-   * @param {Object} [options={}] - Configuration options
-   * @param {string} [options.selector='.my-component'] - Root element selector
-   */
-  constructor(options = {}) {
-    this.options = {
-      selector: '.my-component',
-      ...options,
-    };
+function tokens() {
+  const cs = getComputedStyle(document.documentElement);
+  return {
+    primary: cs.getPropertyValue('--primary').trim(),
+    success: cs.getPropertyValue('--success').trim(),
+    danger:  cs.getPropertyValue('--danger').trim(),
+    text:    cs.getPropertyValue('--t-base').trim(),
+    muted:   cs.getPropertyValue('--t-muted').trim(),
+    border:  cs.getPropertyValue('--border-soft').trim(),
+    bg:      cs.getPropertyValue('--bg-card').trim(),
+  };
+}
 
-    this.element = DOM.select(this.options.selector);
-    this.cleanupFunctions = [];
+const SEEDS = {
+  'sales-trend': (t) => ({
+    backgroundColor: 'transparent',
+    textStyle: { color: t.muted, fontFamily: 'Inter, sans-serif' },
+    xAxis: { type: 'category', data: ['Mon','Tue','Wed','Thu','Fri'], axisLine: { lineStyle: { color: t.border } } },
+    yAxis: { type: 'value', splitLine: { lineStyle: { color: t.border } } },
+    series: [{
+      type: 'line',
+      data: [120, 132, 101, 134, 90],
+      lineStyle: { color: t.primary, width: 2.5 },
+      areaStyle: { color: t.primary + '22' },
+      smooth: true,
+    }],
+  }),
+};
 
-    if (this.element) {
-      this.init();
+const instances = new Map();
+
+function buildAll() {
+  const t = tokens();
+  document.querySelectorAll('[data-echart]').forEach((el) => {
+    const key = el.getAttribute('data-echart');
+    const seed = SEEDS[key];
+    if (!seed) return;
+    let chart = instances.get(el);
+    if (!chart) {
+      chart = echarts.init(el);
+      instances.set(el, chart);
     }
-  }
-
-  /**
-   * Initialize the component
-   */
-  init() {
-    Logger.debug('MyComponent initializing');
-
-    this.bindEvents();
-    this.render();
-
-    Logger.info('MyComponent initialized');
-  }
-
-  /**
-   * Bind event listeners
-   */
-  bindEvents() {
-    // Use event delegation for child elements
-    const cleanup = Events.delegate(
-      this.element,
-      'click',
-      '.action-button',
-      (e, button) => this.handleAction(e, button)
-    );
-    this.cleanupFunctions.push(cleanup);
-
-    // Listen for theme changes
-    const themeCleanup = Events.on(window, 'adminator:themeChanged', () => {
-      this.onThemeChange();
-    });
-    this.cleanupFunctions.push(themeCleanup);
-  }
-
-  /**
-   * Handle action button clicks
-   * @param {Event} e - Click event
-   * @param {Element} button - Clicked button
-   */
-  handleAction(e, button) {
-    e.preventDefault();
-    // Handle the action
-  }
-
-  /**
-   * Called when theme changes
-   */
-  onThemeChange() {
-    // Update component for new theme
-  }
-
-  /**
-   * Render/update the component
-   */
-  render() {
-    // Update DOM as needed
-  }
-
-  /**
-   * Destroy the component and clean up
-   */
-  destroy() {
-    // Run all cleanup functions
-    this.cleanupFunctions.forEach(fn => fn());
-    this.cleanupFunctions = [];
-
-    Logger.debug('MyComponent destroyed');
-  }
-}
-
-export default MyComponent;
-```
-
-### Step 2: Register with the App
-
-Add your component to `app.js`:
-
-```javascript
-import MyComponent from './components/MyComponent';
-
-class AdminatorApp {
-  init() {
-    // ... existing init code ...
-    this.initMyComponent();
-  }
-
-  initMyComponent() {
-    if (DOM.exists('.my-component')) {
-      const myComponent = new MyComponent();
-      this.components.set('myComponent', myComponent);
-    }
-  }
-}
-```
-
-### Step 3: Add Styles
-
-Create styles in `src/assets/styles/spec/components/`:
-
-```scss
-// _my-component.scss
-
-.my-component {
-  // Use CSS variables for theme support
-  background: var(--c-bkg-card);
-  color: var(--c-text-base);
-  border: 1px solid var(--c-border);
-
-  // Mobile-first responsive styles
-  padding: 1rem;
-
-  @media (min-width: 768px) {
-    padding: 1.5rem;
-  }
-}
-```
-
-Import in `index.scss`:
-
-```scss
-@import 'components/my-component';
-```
-
----
-
-## Component Lifecycle
-
-```
-┌─────────────────┐
-│   constructor   │  - Store options
-│                 │  - Find root element
-└────────┬────────┘
-         │
-         ▼
-┌─────────────────┐
-│      init()     │  - Bind events
-│                 │  - Initial render
-└────────┬────────┘
-         │
-         ▼
-┌─────────────────┐
-│  Active State   │  - Handle events
-│                 │  - Respond to theme changes
-└────────┬────────┘
-         │
-         ▼
-┌─────────────────┐
-│    destroy()    │  - Remove event listeners
-│                 │  - Clean up resources
-└─────────────────┘
-```
-
----
-
-## Theme Integration
-
-### Using CSS Variables
-
-Always use CSS variables for colors:
-
-```scss
-.my-component {
-  // Good - supports theme switching
-  background: var(--c-bkg-card);
-  color: var(--c-text-base);
-  border-color: var(--c-border);
-
-  // Bad - hardcoded colors
-  // background: #ffffff;
-  // color: #212529;
-}
-```
-
-### Available CSS Variables
-
-| Variable | Description |
-|----------|-------------|
-| `--c-bkg-body` | Body background |
-| `--c-bkg-card` | Card/panel background |
-| `--c-text-base` | Primary text color |
-| `--c-text-muted` | Secondary text color |
-| `--c-border` | Border color |
-| `--c-primary` | Primary accent color |
-| `--c-success` | Success state color |
-| `--c-danger` | Error/danger color |
-| `--c-warning` | Warning color |
-| `--c-info` | Info color |
-
-### Responding to Theme Changes
-
-```javascript
-import Theme from '../utils/theme';
-import Events from '../utils/events';
-
-class MyComponent {
-  bindEvents() {
-    Events.on(window, 'adminator:themeChanged', (e) => {
-      const { theme } = e.detail; // 'light' or 'dark'
-      this.updateForTheme(theme);
-    });
-  }
-
-  updateForTheme(theme) {
-    // Get theme-specific colors
-    const colors = Theme.getChartColors();
-
-    // Update canvas, SVG, or other non-CSS elements
-    this.canvas.style.backgroundColor = colors.tooltipBg;
-  }
-}
-```
-
----
-
-## Event Handling
-
-### Event Delegation (Preferred)
-
-Use event delegation for better performance:
-
-```javascript
-import Events from '../utils/events';
-
-// Instead of adding to each button:
-// buttons.forEach(btn => btn.addEventListener('click', ...))
-
-// Use delegation (single listener):
-Events.delegate(container, 'click', '.btn', (e, btn) => {
-  console.log('Button clicked:', btn.dataset.action);
-});
-```
-
-### Cleanup Pattern
-
-Always store cleanup functions and call them in `destroy()`:
-
-```javascript
-class MyComponent {
-  constructor() {
-    this.cleanupFunctions = [];
-  }
-
-  bindEvents() {
-    // Events.on returns a cleanup function
-    const cleanup1 = Events.on(this.element, 'click', this.handleClick);
-    this.cleanupFunctions.push(cleanup1);
-
-    const cleanup2 = Events.delegate(this.element, 'click', '.item', this.handleItem);
-    this.cleanupFunctions.push(cleanup2);
-  }
-
-  destroy() {
-    this.cleanupFunctions.forEach(fn => fn());
-    this.cleanupFunctions = [];
-  }
-}
-```
-
-### Custom Events
-
-Emit events for cross-component communication:
-
-```javascript
-import Events from '../utils/events';
-
-// Emit an event
-Events.emit(window, 'myComponent:action', {
-  type: 'update',
-  data: { id: 123 },
-});
-
-// Listen for events
-Events.on(window, 'myComponent:action', (e) => {
-  console.log(e.detail.type, e.detail.data);
-});
-```
-
----
-
-## Mobile Considerations
-
-### Check for Mobile
-
-```javascript
-isMobile() {
-  return window.innerWidth <= 768;
-}
-```
-
-### Touch-Friendly Interactions
-
-- Minimum tap target: 44x44px
-- Add hover states only on non-touch devices
-- Consider swipe gestures for mobile
-
-```scss
-.my-button {
-  min-width: 44px;
-  min-height: 44px;
-  padding: 12px;
-
-  // Hover only on devices that support it
-  @media (hover: hover) {
-    &:hover {
-      background: var(--c-primary-hover);
-    }
-  }
-
-  // Active state for touch
-  &:active {
-    background: var(--c-primary-active);
-  }
-}
-```
-
-### Responsive Events
-
-Use `ResizeObserver` for responsive behavior:
-
-```javascript
-import Performance from '../utils/performance';
-
-class MyComponent {
-  init() {
-    // React to element resize (more efficient than window.resize)
-    this.resizeCleanup = Performance.onResize(this.element, ({ width }) => {
-      this.updateLayout(width);
-    });
-  }
-
-  destroy() {
-    this.resizeCleanup?.();
-  }
-}
-```
-
----
-
-## Testing Components
-
-### Create a Test File
-
-Create `tests/components/MyComponent.test.js`:
-
-```javascript
-import { describe, it, expect, beforeEach, vi } from 'vitest';
-import MyComponent from '../../src/assets/scripts/components/MyComponent';
-
-describe('MyComponent', () => {
-  beforeEach(() => {
-    document.body.innerHTML = `
-      <div class="my-component">
-        <button class="action-button">Click</button>
-      </div>
-    `;
+    chart.setOption(seed(t), true);
   });
-
-  it('initializes when element exists', () => {
-    const component = new MyComponent();
-    expect(component.element).not.toBeNull();
-  });
-
-  it('handles action button clicks', () => {
-    const component = new MyComponent();
-    const handler = vi.spyOn(component, 'handleAction');
-
-    document.querySelector('.action-button').click();
-
-    expect(handler).toHaveBeenCalled();
-  });
-
-  it('cleans up on destroy', () => {
-    const component = new MyComponent();
-    component.destroy();
-
-    expect(component.cleanupFunctions).toHaveLength(0);
-  });
-});
-```
-
-### Run Tests
-
-```bash
-npm test                    # Watch mode
-npm run test:run           # Single run
-npm run test:coverage      # With coverage
-```
-
----
-
-## Example: Complete Component
-
-Here's a complete example of a notification component:
-
-```javascript
-/**
- * NotificationComponent - Toast notifications
- */
-
-import { DOM } from '../utils/dom';
-import Events from '../utils/events';
-import Logger from '../utils/logger';
-
-class NotificationComponent {
-  constructor(options = {}) {
-    this.options = {
-      container: '.notification-container',
-      duration: 5000,
-      position: 'top-right',
-      ...options,
-    };
-
-    this.container = DOM.select(this.options.container);
-    this.notifications = new Map();
-    this.cleanupFunctions = [];
-
-    this.init();
-  }
-
-  init() {
-    // Create container if missing
-    if (!this.container) {
-      this.container = DOM.create('div', {
-        class: `notification-container notification-${this.options.position}`,
-      });
-      document.body.appendChild(this.container);
-    }
-
-    this.bindEvents();
-    Logger.info('NotificationComponent initialized');
-  }
-
-  bindEvents() {
-    // Delegate click events for close buttons
-    const cleanup = Events.delegate(
-      this.container,
-      'click',
-      '.notification-close',
-      (e, btn) => {
-        const notification = btn.closest('.notification');
-        if (notification) {
-          this.dismiss(notification.dataset.id);
-        }
-      }
-    );
-    this.cleanupFunctions.push(cleanup);
-  }
-
-  show(message, type = 'info') {
-    const id = `notification-${Date.now()}`;
-
-    const notification = DOM.create('div', {
-      class: `notification notification-${type}`,
-      'data-id': id,
-    }, [
-      DOM.create('span', { class: 'notification-message' }, [message]),
-      DOM.create('button', {
-        class: 'notification-close',
-        'aria-label': 'Close notification',
-      }, ['×']),
-    ]);
-
-    this.container.appendChild(notification);
-    this.notifications.set(id, notification);
-
-    // Auto-dismiss
-    if (this.options.duration > 0) {
-      setTimeout(() => this.dismiss(id), this.options.duration);
-    }
-
-    // Animate in
-    requestAnimationFrame(() => {
-      notification.classList.add('notification-visible');
-    });
-
-    return id;
-  }
-
-  dismiss(id) {
-    const notification = this.notifications.get(id);
-    if (!notification) return;
-
-    notification.classList.remove('notification-visible');
-    notification.classList.add('notification-hiding');
-
-    setTimeout(() => {
-      notification.remove();
-      this.notifications.delete(id);
-    }, 300);
-  }
-
-  success(message) {
-    return this.show(message, 'success');
-  }
-
-  error(message) {
-    return this.show(message, 'error');
-  }
-
-  warning(message) {
-    return this.show(message, 'warning');
-  }
-
-  destroy() {
-    this.cleanupFunctions.forEach(fn => fn());
-    this.notifications.clear();
-    this.container?.remove();
-    Logger.debug('NotificationComponent destroyed');
-  }
 }
 
-export default NotificationComponent;
+export function initECharts() {
+  if (!document.querySelector('[data-echart]')) return;
+  buildAll();
+  new MutationObserver((records) => {
+    if (records.some((r) => r.attributeName === 'data-theme')) buildAll();
+  }).observe(document.documentElement, { attributes: true });
+  // Re-render on resize
+  window.addEventListener('resize', () => instances.forEach((c) => c.resize()));
+}
 ```
+
+### 2. Wire it up
+
+In `index.js`:
+
+```js
+import { initECharts } from './echarts.js';
+
+function start() {
+  mountShell();
+  initShellBehaviors();
+  initCharts();
+  initVectorMaps();
+  initCalendarPage();
+  initECharts();   // ← add this
+}
+```
+
+### 3. Use it
+
+```html
+<div data-echart="sales-trend" style="width:100%;height:300px;"></div>
+```
+
+The pattern is identical to `charts.js` / `calendar.js` / `maps.js` — copy any of them as a template.
 
 ---
 
-## Summary
+## Anti-patterns
 
-When creating components:
+Things v3 did that v4 deliberately doesn't:
 
-1. **Follow the pattern** - Use the class structure with constructor, init, bindEvents, render, destroy
-2. **Use utilities** - DOM, Events, Logger, Performance, Theme
-3. **Support themes** - Use CSS variables, listen for theme changes
-4. **Clean up** - Store and call cleanup functions in destroy()
-5. **Test** - Write unit tests for your component
-6. **Document** - Add JSDoc comments to all public methods
+| Anti-pattern | Why it's gone |
+|--------------|---------------|
+| `class MyComponent { constructor(el) { … } }` | Adds 30+ lines for what's usually a 5-line behavior. Use a function + `data-X` attribute. |
+| Component registry / DI container | Adminator pages are static. There's no need for runtime composition. |
+| Custom event bus (`adminator:themechange`) | `MutationObserver` on `data-theme` is built-in, free, and 4 lines. |
+| Inline style strings injected via JS | Use SCSS — that's what stylesheets are for. JS-injected styles defeat the token system. |
+| Polyfilled `Promise` / `fetch` | Browser support is "evergreen modern" — IE11 isn't on the support matrix. |
+| jQuery's `$(el).each(...)` | `document.querySelectorAll(sel).forEach(fn)` does the same job natively. |
+| Library wrappers that "abstract" Chart.js / FullCalendar | Use them directly. The libraries are already well-designed. |
 
-For questions or issues, see the main [README.md](../README.md) or open an issue on GitHub.
+---
+
+## When to break the conventions
+
+These conventions cover the typical case. If you have a genuinely complex stateful widget (e.g. a kanban board with drag-and-drop, undo, or undo, multi-user cursors), the "data-attribute + init function" pattern is too small. Build a real module with proper state management — but keep the integration with the shell minimal: it should still be initialized from `start()` and use the `tokens()` + MutationObserver pattern for theme awareness.
+
+The point of the patterns is to keep simple things simple, not to forbid complexity.
