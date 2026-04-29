@@ -1,5 +1,31 @@
 # Changelog
 
+## [4.1.1] - 2026-04-29
+
+### Live preview migrated to R2
+
+Adminator's live preview was on the legacy `colorlib.com/polygon/adminator/` path (manually maintained, was running an outdated v4.0.0 build). Migrated to the modern Cloudflare R2 hosting where the other 45 Colorlib templates live:
+
+- **New preview URL:** <https://preview.colorlib.com/theme/adminator/>
+- **New download URL:** <https://downloads.colorlib.com/theme/adminator.zip>
+
+Now serves the v4.1.0 build (with the ⌘K palette and mobile drawer working). Future releases auto-update via the same `rclone sync` deploy.
+
+### URL refactor
+
+Updated 7 WP posts that linked to the old polygon URL:
+
+- **Colorlib:** #34814 (35 Best Free Admin Dashboards), #374836 (20 Best Dark Admin Dashboards)
+- **AdminLTE.io:** #322 (32 Best Free & Premium), #712 (18 Best HTML), #989 (26 Best Bootstrap Login Forms — sign-in URL), #4605 (20 Best E-Commerce), #1146 (25 Best Bootstrap 5)
+
+Plus 25 local references across `scripts/`, `README.md`, `docs/`, and `docs/_config.yml`.
+
+### No source changes
+
+JS/CSS/HTML in `src/` are unchanged from v4.1.0. This is a deploy + URL maintenance release.
+
+---
+
 ## [4.1.0] - 2026-04-28
 
 ### Three quality fixes for the v4 release

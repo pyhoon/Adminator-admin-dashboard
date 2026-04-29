@@ -13,7 +13,7 @@ Vanilla-JS admin dashboard template. Token-driven CSS-variable design system. No
 {: .fs-6 .fw-300 }
 
 [Get Started](getting-started/installation){: .btn .btn-primary .fs-5 .mb-4 .mb-md-0 .mr-2 }
-[Live Demo](https://colorlib.com/polygon/adminator/index.html){: .btn .fs-5 .mb-4 .mb-md-0 .mr-2 }
+[Live Demo](https://preview.colorlib.com/theme/adminator/index.html){: .btn .fs-5 .mb-4 .mb-md-0 .mr-2 }
 [GitHub](https://github.com/puikinsh/Adminator-admin-dashboard){: .btn .fs-5 .mb-4 .mb-md-0 }
 
 ---

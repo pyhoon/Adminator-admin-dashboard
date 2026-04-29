@@ -18,13 +18,13 @@ permalink: /pages/
 
 All 18 pages share the same shell (sidebar + topbar + footer) except where noted. Each page is a static HTML file in [`src/`](https://github.com/puikinsh/Adminator-admin-dashboard/tree/master/src) with no template engine — what you see in the file is what gets served.
 
-Live previews link to <https://colorlib.com/polygon/adminator/>.
+Live previews link to <https://preview.colorlib.com/theme/adminator/>.
 
 ---
 
 ## Workspace
 
-### Dashboard — [index.html](https://colorlib.com/polygon/adminator/index.html)
+### Dashboard — [index.html](https://preview.colorlib.com/theme/adminator/index.html)
 
 The default landing page. Contains:
 
@@ -43,7 +43,7 @@ The default landing page. Contains:
 
 ## Communications
 
-### Email — [email.html](https://colorlib.com/polygon/adminator/email.html)
+### Email — [email.html](https://preview.colorlib.com/theme/adminator/email.html)
 
 3-pane inbox layout (folder rail / message list / reader pane).
 
@@ -53,7 +53,7 @@ The default landing page. Contains:
 
 `data-active="email"`. Demonstrates: complex multi-pane layout, list styling, attachment cards, message threading.
 
-### Compose — [compose.html](https://colorlib.com/polygon/adminator/compose.html)
+### Compose — [compose.html](https://preview.colorlib.com/theme/adminator/compose.html)
 
 Full email composer with:
 
@@ -65,7 +65,7 @@ Full email composer with:
 
 `data-active="compose"`. Demonstrates: rich form layout, recipient chips, toolbar styling, contenteditable body.
 
-### Calendar — [calendar.html](https://colorlib.com/polygon/adminator/calendar.html)
+### Calendar — [calendar.html](https://preview.colorlib.com/theme/adminator/calendar.html)
 
 Real FullCalendar instance with 24 seed events.
 
@@ -75,7 +75,7 @@ Real FullCalendar instance with 24 seed events.
 
 `data-active="calendar"`. Demonstrates: FullCalendar wiring, event categories, sidebar layout, responsive collapse.
 
-### Chat — [chat.html](https://colorlib.com/polygon/adminator/chat.html)
+### Chat — [chat.html](https://preview.colorlib.com/theme/adminator/chat.html)
 
 2-pane conversation UI.
 
@@ -88,7 +88,7 @@ Real FullCalendar instance with 24 seed events.
 
 ## Components
 
-### Charts — [charts.html](https://colorlib.com/polygon/adminator/charts.html)
+### Charts — [charts.html](https://preview.colorlib.com/theme/adminator/charts.html)
 
 6 themed Chart.js examples:
 
@@ -103,7 +103,7 @@ All re-render on theme toggle. Each is wrapped in a `.chart-canvas-wrap` for res
 
 `data-active="charts"`. Demonstrates: every Chart.js type the seeds support.
 
-### Forms — [forms.html](https://colorlib.com/polygon/adminator/forms.html)
+### Forms — [forms.html](https://preview.colorlib.com/theme/adminator/forms.html)
 
 Working "Profile settings" form + state demos:
 
@@ -115,7 +115,7 @@ Working "Profile settings" form + state demos:
 
 `data-active="forms"`. Demonstrates: every form primitive.
 
-### UI Elements — [ui.html](https://colorlib.com/polygon/adminator/ui.html)
+### UI Elements — [ui.html](https://preview.colorlib.com/theme/adminator/ui.html)
 
 The component gallery:
 
@@ -131,7 +131,7 @@ The component gallery:
 
 `data-active="ui"`. Demonstrates: every UI primitive in one place.
 
-### Buttons — [buttons.html](https://colorlib.com/polygon/adminator/buttons.html)
+### Buttons — [buttons.html](https://preview.colorlib.com/theme/adminator/buttons.html)
 
 All button variants in one gallery:
 
@@ -145,7 +145,7 @@ All button variants in one gallery:
 
 `data-active="buttons"`.
 
-### Basic Table — [basic-table.html](https://colorlib.com/polygon/adminator/basic-table.html)
+### Basic Table — [basic-table.html](https://preview.colorlib.com/theme/adminator/basic-table.html)
 
 Two table examples:
 
@@ -154,7 +154,7 @@ Two table examples:
 
 `data-active="basic-table"`.
 
-### Data Table — [datatable.html](https://colorlib.com/polygon/adminator/datatable.html)
+### Data Table — [datatable.html](https://preview.colorlib.com/theme/adminator/datatable.html)
 
 Full-featured data table (no DataTables library — custom CSS):
 
@@ -164,7 +164,7 @@ Full-featured data table (no DataTables library — custom CSS):
 
 `data-active="datatable"`. Demonstrates: complex table, row selection, pagination, mono-font cells.
 
-### Google Maps — [google-maps.html](https://colorlib.com/polygon/adminator/google-maps.html)
+### Google Maps — [google-maps.html](https://preview.colorlib.com/theme/adminator/google-maps.html)
 
 Iframe embed of Google Maps + supplementary content:
 
@@ -174,7 +174,7 @@ Iframe embed of Google Maps + supplementary content:
 
 `data-active="google-maps"`. No API key required (iframe embed). To point elsewhere, change the iframe URL.
 
-### Vector Maps — [vector-maps.html](https://colorlib.com/polygon/adminator/vector-maps.html)
+### Vector Maps — [vector-maps.html](https://preview.colorlib.com/theme/adminator/vector-maps.html)
 
 Real jsvectormap world map + supporting content:
 
@@ -188,11 +188,11 @@ Real jsvectormap world map + supporting content:
 
 ## Pages section
 
-### Blank — [blank.html](https://colorlib.com/polygon/adminator/blank.html)
+### Blank — [blank.html](https://preview.colorlib.com/theme/adminator/blank.html)
 
 Starter page with hero + empty card. Useful when prototyping a new screen — copy the file, change `data-active`/`data-crumbs`, fill in `<main class="content">`.
 
-### Sign In — [signin.html](https://colorlib.com/polygon/adminator/signin.html)
+### Sign In — [signin.html](https://preview.colorlib.com/theme/adminator/signin.html)
 
 Standalone (no shell). Split-screen:
 
@@ -201,11 +201,11 @@ Standalone (no shell). Split-screen:
 
 Layout collapses to single-column under 900px (brand panel hides). Demonstrates: split-screen auth pattern, social-auth styling.
 
-### Sign Up — [signup.html](https://colorlib.com/polygon/adminator/signup.html)
+### Sign Up — [signup.html](https://preview.colorlib.com/theme/adminator/signup.html)
 
 Same shell as signin, with a longer form: full name, work email, workspace URL (with addon), password (with strength bar), terms checkbox.
 
-### 404 — [404.html](https://colorlib.com/polygon/adminator/404.html)
+### 404 — [404.html](https://preview.colorlib.com/theme/adminator/404.html)
 
 Standalone error card with:
 
@@ -215,7 +215,7 @@ Standalone error card with:
 - Two CTAs (Back to dashboard / Go back)
 - Meta footer with status code + ref
 
-### 500 — [500.html](https://colorlib.com/polygon/adminator/500.html)
+### 500 — [500.html](https://preview.colorlib.com/theme/adminator/500.html)
 
 Same pattern as 404, with "Try again" CTA that reloads the page.
 

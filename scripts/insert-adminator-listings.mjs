@@ -53,8 +53,8 @@ function blogBtn(downloadUrl, previewUrl) {
 
 const GH_URL = 'https://github.com/puikinsh/Adminator-admin-dashboard';
 // Live preview lives on Colorlib's polygon subdomain — NOT GitHub Pages.
-const DEMO_URL = 'https://colorlib.com/polygon/adminator/index.html';
-const DEMO_BASE = 'https://colorlib.com/polygon/adminator/';
+const DEMO_URL = 'https://preview.colorlib.com/theme/adminator/index.html';
+const DEMO_BASE = 'https://preview.colorlib.com/theme/adminator/';
 
 // ── Per-post entry builders ───────────────────────────────────────────────────
 

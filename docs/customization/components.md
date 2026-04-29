@@ -18,7 +18,7 @@ parent: Customization
 
 Every primitive in Adminator 4 is a custom CSS class — no Bootstrap utilities, no JS framework. The classes below cover everything used across the 18 pages.
 
-For working examples of any of these, open <https://colorlib.com/polygon/adminator/ui.html>, <https://colorlib.com/polygon/adminator/forms.html>, or <https://colorlib.com/polygon/adminator/buttons.html>.
+For working examples of any of these, open <https://preview.colorlib.com/theme/adminator/ui.html>, <https://preview.colorlib.com/theme/adminator/forms.html>, or <https://preview.colorlib.com/theme/adminator/buttons.html>.
 
 ---
 
