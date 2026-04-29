@@ -1,4 +1,12 @@
 /* ============ RESPONSIVE ============ */
+
+/* Auth pages: collapse the marketing aside when the split-screen no longer fits.
+   (Lives here, not in _auth.scss, so it wins over the later default rules there.) */
+@media (max-width: 900px) {
+  .auth-shell { grid-template-columns: 1fr; }
+  .auth-aside { display: none; }
+}
+
 @media (max-width: 1200px) {
   /* Dashboard */
   .sv-regions { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px; }
@@ -24,12 +32,17 @@
   .nav-link.is-active::before { left: -10px; }
   .workspace { justify-content: center; padding: 6px; }
   .col-6 { grid-column: span 12; }
+
+  /* Chat */
+  .chat-shell { grid-template-columns: 240px 1fr; }
 }
 
 @media (max-width: 720px) {
-  /* Sidebar becomes an off-canvas drawer.
-     Defaults: positioned off-screen left, slides in via .has-drawer-open. */
-  .shell { grid-template-columns: 0 1fr; }
+  /* ---- Shell / sidebar drawer ----
+     Sidebar becomes position:fixed (off-grid), so collapse the grid to a
+     single column — otherwise .main is auto-placed into the empty column-1
+     (0px) and disappears. */
+  .shell { display: block; }
   .d-sidebar {
     position: fixed;
     top: 0; left: 0;
@@ -54,22 +67,75 @@
 
   .hamburger { display: inline-flex; }
 
+  /* ---- Topbar: aggressive de-clutter ---- */
+  .d-topbar { padding: 0 12px; }
+  .topbar-actions { gap: 2px; }
+
+  /* Crumbs eat horizontal space — hide everything except the active page */
+  .crumbs { gap: 6px; min-width: 0; flex: 1; overflow: hidden; }
+  .crumbs > span:not(.current), .crumbs .sep { display: none; }
+  .crumbs .current { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+  /* Search becomes its own icon-button (text + kbd hidden, padding tightened) */
+  .cmd { min-width: 0; padding: 0; width: 36px; height: 36px; justify-content: center; }
+  .cmd span, .cmd .kbd { display: none; }
+  .cmd svg { width: 16px; height: 16px; }
+
+  /* Trim avatar margin */
+  .avatar { margin-left: 2px; }
+
+  /* ---- Dropdowns: prevent off-screen overflow ---- */
+  .dd-menu {
+    min-width: 0;
+    width: calc(100vw - 16px);
+    max-width: 360px;
+    right: -8px;            /* pin to viewport edge minus topbar padding (12px) */
+  }
+  .dd-menu.dd-profile {
+    width: calc(100vw - 16px);
+    max-width: 280px;
+  }
+
+  /* ---- Content / hero / footer ---- */
   .content { padding: 20px 16px 16px; }
-  .d-topbar { padding: 0 16px; }
   .d-footer { padding: 20px 16px; flex-direction: column; gap: 10px; align-items: flex-start; }
   .hero { flex-direction: column; align-items: flex-start; gap: 20px; }
+  .hero-actions { flex-wrap: wrap; }
+
+  /* ---- Generic grid ---- */
+  .grid { gap: 16px; }
+
+  /* ---- Dashboard ---- */
   .kpi-grid { grid-template-columns: 1fr; }
-  .cmd { min-width: 0; padding: 7px 10px; }
-  .cmd span, .cmd .kbd { display: none; }
+  .sv-regions { grid-template-columns: 1fr; gap: 22px; }
   .monthly-footer { grid-template-columns: repeat(2, 1fr); gap: 16px; }
   .wx-forecast { grid-template-columns: repeat(4, 1fr); gap: 6px; }
+  .wx-hero { flex-direction: column; align-items: flex-start; gap: 12px; }
+  .wx-date { text-align: left; }
+  .sales-summary { flex-direction: column; align-items: flex-start; gap: 12px; }
 
-  /* Email */
+  /* Card breathing room */
+  .card { padding: 18px; }
+  .card-head { flex-wrap: wrap; gap: 10px; }
+
+  /* ---- Charts page ---- */
+  .chart-canvas-wrap { min-height: 200px; }
+
+  /* ---- Tables: ensure horizontal scroll fallback ---- */
+  .data-toolbar { flex-direction: column; align-items: stretch; gap: 10px; }
+  .data-toolbar-left, .data-toolbar-right { min-width: 0; flex-wrap: wrap; }
+  .data-foot { flex-direction: column; gap: 12px; align-items: flex-start; }
+
+  /* ---- Email ---- */
   .mail-shell { grid-template-columns: 1fr; }
   .mail-rail { display: none; }
   .mail-hero { flex-direction: column; align-items: flex-start; gap: 16px; }
 
-  /* Calendar */
+  /* ---- Chat ---- */
+  .chat-shell { grid-template-columns: 1fr; height: auto; }
+  .chat-rail { display: none; }
+
+  /* ---- Calendar ---- */
   .cal-shell { grid-template-columns: 1fr; }
   .cal-toolbar { flex-wrap: wrap; gap: 10px; padding: 14px; }
   .cal-toolbar-left { width: 100%; justify-content: space-between; }
@@ -78,4 +144,20 @@
   .cal-weekdays > div { padding: 8px 6px; font-size: 9px; letter-spacing: 0.1em; }
   .cal-cell { padding: 5px; }
   .cal-chip-time { display: none; }
+
+  /* ---- Compose page (inline-styled form rows) ---- */
+  .compose-row { grid-template-columns: 1fr !important; gap: 6px !important; }
+  .compose-row-actions { justify-content: flex-start !important; }
+
+  /* ---- Auth pages ---- */
+  .auth-main { padding: 24px 20px; }
+}
+
+@media (max-width: 480px) {
+  .monthly-footer { grid-template-columns: 1fr; }
+  .wx-forecast { grid-template-columns: repeat(2, 1fr); }
+  .form-actions { flex-direction: column; align-items: stretch; }
+  .form-actions .btn { width: 100%; justify-content: center; }
+  .form-actions .spacer { display: none; }
+  .social-row { grid-template-columns: 1fr; }
 }

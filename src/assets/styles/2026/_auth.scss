@@ -6,10 +6,9 @@
   min-height: 100vh;
   background: var(--bg-body);
 }
-@media (max-width: 900px) {
-  .auth-shell { grid-template-columns: 1fr; }
-  .auth-aside { display: none; }
-}
+
+/* Responsive override for .auth-aside lives in _responsive.scss to win over
+   the default rules below — see chat note for why. */
 
 .auth-aside {
   position: relative;
@@ -125,9 +124,6 @@
   display: flex; flex-direction: column;
   padding: 32px 48px;
   min-height: 100vh;
-}
-@media (max-width: 720px) {
-  .auth-main { padding: 24px 20px; }
 }
 
 .auth-main-top {

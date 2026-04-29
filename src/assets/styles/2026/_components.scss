@@ -90,6 +90,11 @@
 .col-6  { grid-column: span 6; }
 .col-12 { grid-column: span 12; }
 
+/* Horizontal-scroll wrapper for tables that overflow on narrow viewports */
+.table-scroll { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.table-scroll::-webkit-scrollbar { height: 4px; }
+.table-scroll::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
 /* Generic table */
 .table { width: 100%; border-collapse: collapse; }
 .table thead th {

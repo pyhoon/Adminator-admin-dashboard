@@ -1,5 +1,63 @@
 # Changelog
 
+## [4.1.2] - 2026-04-29
+
+### Mobile layout fixes
+
+The ≤720px viewport was effectively unusable: the entire app squeezed into a 0px-wide strip, the topbar overflowed, dropdowns ran off-screen, and the chat/auth pages still rendered their desktop split layouts. v4.1.2 makes the template actually work on a phone.
+
+#### The shell collapse bug (root cause)
+
+`_responsive.scss` switched the shell to `grid-template-columns: 0 1fr` at ≤720px so `.main` would fill the viewport while the sidebar became a position-fixed drawer. But making the sidebar `position: fixed` removes it from grid auto-placement, and the auto-placer dropped `.main` into the (now empty) column-1 — which is 0px wide. Result: a 0px main column, the topbar reduced to 24px, and the entire content strip rendered at zero width while the rest of the viewport sat blank.
+
+Fix: collapse the shell to `display: block` at ≤720px so `.main` flows naturally below the off-grid drawer.
+
+#### The source-order bug (chat / auth)
+
+`_chat.scss` and `_auth.scss` defined responsive overrides like `.chat-rail { display: none }` inside an `@media (max-width: 720px)` block — *before* the rule that gives `.chat-rail` its default `display: flex`. CSS resolves equal-specificity conflicts by source order, so the later default rule won at every viewport, including mobile. The chat page rendered both the conversations rail and the chat pane stacked vertically; the auth pages kept the marketing aside even on phones.
+
+Fix: moved chat (`max-width: 720px` + `1100px` overrides) and auth (`max-width: 900px` + `720px` overrides) media blocks into `_responsive.scss`, which is `@use`d last in `index.scss` so its rules win.
+
+#### Topbar overcrowding
+
+At 390px the topbar tried to fit hamburger + crumbs + 220px-wide search + 3 icon buttons + theme toggle + avatar. Now at ≤720px:
+
+- Crumbs hide everything except the current page (with ellipsis if long)
+- Search collapses from a 220px text button to a 36×36 icon button
+- Action gap tightens from 6px to 2px
+- Topbar padding drops from 32px to 12px
+
+#### Dropdowns overflowing the viewport
+
+Notification, message, and profile dropdowns had `min-width: 340px` — wider than a 320–375px viewport, so they clipped off-screen. Now constrained to `width: calc(100vw - 16px)` with sane max-widths.
+
+#### Other missing rules
+
+- `.sv-regions` (4-col → 1-col), `.wx-hero` and `.sales-summary` stacking, KPI grid full-width, hero actions wrap
+- `.chart-canvas-wrap` min-height drops from 240px to 200px so charts breathe
+- New `.table-scroll` wrapper utility — wrapping any `<table>` lets it scroll horizontally instead of overflowing the card
+- Compose form's three inline `grid-template-columns: 64px 1fr` rows tagged with a `.compose-row` class so they collapse to a single column on mobile
+- New ≤480px breakpoint for very narrow phones: monthly-footer 1-col, weather forecast 2-col, form actions full-width, social row stacked
+
+#### Brand version
+
+`Shell.js` brand tag and footer were still showing `v3.1` / `v3.1.0` from a pre-redesign snapshot — now match `package.json` (`v4.1.2`).
+
+### Files touched
+
+- `src/assets/styles/2026/_responsive.scss` — main rewrite (chat/auth/email/dashboard/topbar/dropdowns/tables consolidated here)
+- `src/assets/styles/2026/_chat.scss`, `_auth.scss` — removed broken in-partial @media blocks
+- `src/assets/styles/2026/_components.scss` — new `.table-scroll` utility
+- `src/basic-table.html` — wrapped both tables in `.table-scroll`
+- `src/compose.html` — added `.compose-row` class to three grid rows
+- `src/assets/scripts/2026/Shell.js` — brand tag + footer version strings
+
+### Verified
+
+Lint clean (eslint 0/0, stylelint 0/0). Production build clean. Visual mobile verification (390×844 via CDP) on dashboard, email, calendar, charts, datatable, basic-table, compose, chat, forms, and signin — all render correctly.
+
+---
+
 ## [4.1.1] - 2026-04-29
 
 ### Live preview migrated to R2
